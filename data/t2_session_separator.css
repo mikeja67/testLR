@@ -1,0 +1,195 @@
+.sessions-row .asession {
+    margin-bottom: 20px;
+    cursor: pointer;
+    padding:0;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.table-display {
+    display: table;
+}
+
+.table-display .table-cell {
+    display:table-cell;
+}
+
+.sessions-row .ajax-courses {
+    padding: 0px 15px;
+    margin-bottom: 20px;
+}
+
+.ajax-courses .courses-container {
+    padding: 0px;
+}
+
+.ajax-courses .courses-loading {
+    text-align: center!important;
+    padding: 15px;
+    height: 42px;
+}
+
+.ajax-courses .empty-courses {
+    text-align: center!important;
+    padding: 15px;
+    height: 42px;
+}
+
+.account_type_4 .ajax-courses .empty-courses, .ajax-courses .courses-loading {
+    border-radius: 5px;
+}
+
+.account_type_4 .sessions-row .ajax-courses {
+	background-color: transparent;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding:0px;
+}
+
+.session-title {
+    max-height:70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.session-code {
+    max-height:20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.session-desc {
+    max-height:45px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.session-tracking-info .score-infos, .session-tracking-info .end-infos {
+    display:inline-block;
+    margin-left: 0px;
+}
+
+.account_type_4 .session-tracking-info .score-infos {
+    margin-left: 20px;
+}
+
+.account_type_4 .session-tracking-info .end-infos {
+    margin-left: 20px;
+}
+
+.session-tracking-info .status-infos {
+    width:50px;
+    height: 40px;
+    position: absolute;
+    left:0;
+    bottom:0;
+    padding-top: 3px;
+    text-align: center;
+}
+
+.session-stripe {
+    width:50px;
+    text-align: center;
+}
+
+.session-stripe img  {
+    transition: transform 200ms;
+}
+
+.sessions-row .asession.selected .session-stripe img {
+    transform: rotate(90deg);
+}
+
+.ajax-courses .tableau_grand {
+    width: 100%;
+}
+
+.course-pager {
+    margin-bottom: 20px;
+    margin-top: -20px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.course-pager-text {
+    color:#515252;
+    font-size: 12px;
+}
+
+.course-pager-element {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    border-radius: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.next-page, .prev-page {
+    width:36px;
+    height:29px;
+    border-width: 0px;
+}
+
+.asession .session-course-count {
+    font-size: 13px;
+    margin-right: 15px;
+}
+
+@media  (max-width: 992px){
+    .session-thumbnail {
+        width: 175px;
+        height: 175px;
+        position: relative;
+        overflow: hidden;
+    }
+    .session-thumbnail img {
+        right: 88px;
+    }
+    .session-left {
+        width: calc(100% - 175px);
+    }
+    .bitestrap .pull-right {
+        width: 175px
+    }
+}
+
+@media  (max-width: 767px){
+    .session-thumbnail {
+        display: none;
+    }
+    .session-left {
+        width: 100%;
+    }
+    .session-title {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .session-code {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .session-desc {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+.icon_40_40 {
+    width:40px;
+    height:40px;
+}
+
+.icon_40_30 {
+    width:40px;
+    height:30px;
+}
+
+.session-actions {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    height: 40px;
+}

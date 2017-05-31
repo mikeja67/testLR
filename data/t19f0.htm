@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
+	<meta name="author" content="e-doceo" />
+	<meta name="viewport" content="maximum-scale=1.0,user-scalable = no" />
+	<title>Video</title>
+	<script type="text/javascript" src="../../lib/scripts/jquery.js"></script>
+	<style>
+		.videoContainer
+		{
+			position:absolute;
+			height:100%;
+			width:100%;
+			overflow: hidden;
+		}
+
+		.videoContainer video
+		{
+			min-width: 100%;
+			min-height: 100%;
+		}
+
+		body {
+			background-color: black;
+			margin: 0;
+		}
+
+	</style>
+</head>
+<body>
+<div class="videoContainer">
+		<video controls src="../../data/159/v17hv035.mp4.mp4" width="640" height="480">
+			<object width="640px" height="480px" id="gsplayer" type="application/x-shockwave-flash"  data="../../lib/scripts/gs_player/player.swf">
+				<param name="movie" value="../../lib/scripts/gs_player/player.swf?path=../../../data/159/v17hv035.mp4.mp4&amp;type=mp4&amp;autoplay=false&fullscreen=true">
+				<param name="allowScriptAccess" value="sameDomain">
+				<param name="allowfullscreen" value="true">
+				<param name="flashvars" value="path=../../../data/159/v17hv035.mp4.mp4&amp;type=mp4&amp;autoplay=false&fullscreen=true">
+			</object>
+		</video>
+</div>
+</body>
+</html>

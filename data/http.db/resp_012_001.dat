@@ -1,0 +1,315 @@
+var ItemRatingManager = Class.extend({
+    init: function(params) {
+		if (params.rating_class && params.rating_class != '') {
+			this.rating_class = params.rating_class;
+		} else {
+			this.rating_class = '.rating';
+        }
+        this.criterions_assocs = params.criterions_assocs;
+        this.user_id = params.user_id;
+        this.items = {};
+
+        if(this.criterions_assocs.length == 1) {
+            this.default_assoc = this.criterions_assocs[0];
+        }
+    },
+
+    addItem: function addItem(params) {
+        if(typeof this.default_assoc == 'undefined') {
+            return false;
+        }
+
+        if(params.item !== null && params.item_type !== null) {
+            if(typeof this.items[params.item_type] == 'undefined') {
+                this.items[params.item_type] = [];
+            }
+
+            var tmp_item = {
+                item: params.item,
+                item_type: params.item_type,
+                container_element: params.container_element
+            };
+
+            //Determination de l'item_id en fonction du type
+            if(tmp_item.item_type == 'sco') {
+                tmp_item.item_id = params.item.unique_sco_id;
+            } else if(tmp_item.item_type == 'course') {
+                tmp_item.item_id = params.item.id_parcours;
+            } else if(tmp_item.item_type == 'message') {
+                tmp_item.item_id = params.item.id;
+            }
+
+            //Le parent doit être un objet du stype {item_type:, item_id:}
+            if(params.parent) {
+                tmp_item.parent = params.parent;
+            }
+
+            if(typeof params.target == 'undefined') {
+                //Création du bouton pour affichage
+                tmp_item.$target = this.createRatingButton(tmp_item);
+            } else {
+                tmp_item.$target = $(params.target);
+            }
+
+            //Mise à jour en fonction de si l'utilisateur à déjà évalué
+            this.updateRatingState(tmp_item);
+
+            //On vérifie que l'on a pas déjà cet item à gérer
+            var already_managed_item = false;
+            for(var i = 0 ; i < this.items[params.item_type].length && !already_managed_item ; i++) {
+                if(tmp_item.item_id == this.items[params.item_type][i].item_id) {
+                    already_managed_item = i;
+                }
+            }
+
+            if(already_managed_item !== false) {
+                this.items[params.item_type][already_managed_item].$target = $(this.items[params.item_type][already_managed_item].$target.selector + ',' + tmp_item.$target.selector);
+                this.items[params.item_type][already_managed_item].$target.bind('click', this.ratingHandler.bind(this, this.items[params.item_type][already_managed_item]));
+            } else {
+                //Ajout des handlers
+                tmp_item.$target.bind('click', this.ratingHandler.bind(this, tmp_item));
+                this.items[params.item_type].push(tmp_item);
+            }
+
+        }
+        return;
+    },
+    /**
+     * Mise à jour en fonction de si l'utilisateur à déjà évalué
+     * @param item_container
+     */
+    updateRatingState: function updateRatingState(item_container) {
+        //Détermination si l'utilisateur a évalué ce critère
+        var is_user_rated = false;
+
+        if(item_container.item_type == 'course') {
+            if(item_container.item.childs != null) {
+                is_user_rated = item_container.item.user_evaluations.length == item_container.item.childs.length;
+            } else {
+                is_user_rated = item_container.item.user_evaluations.length == item_container.item.nb_sco;
+            }
+        } else {
+            for(var i in item_container.item.user_evaluations) {
+                if(item_container.item.user_evaluations[i].assoc_id == this.default_assoc.id) {
+                    is_user_rated = true;
+                }
+            }
+        }
+
+        if(is_user_rated) {
+            item_container.$target.addClass('rated');
+            if(this.default_assoc._criterion != 'undefined' && this.default_assoc._criterion.img_roll) {
+                $('img', item_container.$target).attr('src', this.default_assoc._criterion.img_roll);
+            }
+        }
+    },
+    /**
+     * Création du bouton servant à noter, dépend des critères
+     * @param item_container
+     */
+    createRatingButton: function createRatingButton(item_container) {
+        var $target = $(item_container.container_element);
+        $target.append('<img src="' + this.default_assoc._criterion.img + '" />');
+
+        var value = 0;
+        //Recherche de la valeur à afficher par rapport à l'association par défaut
+        if(item_container.item.criterions !== null && typeof item_container.item.criterions  != 'undefined') {
+            for(var i in item_container.item.criterions) {
+                if(item_container.item.criterions[i].id == this.default_assoc.criterion_id) {
+                    value = item_container.item.criterions[i].value;
+                }
+            }
+        } else if(item_container.item.ratings != null && typeof item_container.item.ratings  != 'undefined') {
+            for(var i in item_container.item.ratings) {
+                if(item_container.item.ratings[i].criterion_id == this.default_assoc.criterion_id) {
+                    value = item_container.item.ratings[i].result;
+                }
+            }
+        }
+
+        $target.append('<span class="rating-counter">' + value + '</span>');
+
+        return $target;
+    },
+    /**
+     * Dans le cas du multi critère il faudra faire évoluer cette fonction
+     * @param e
+     */
+    ratingHandler: function ratingHandler(item_container, e) {
+        var self = this;
+		var rating_class = self.rating_class;
+
+        if(item_container.$target.hasClass('rating_in_progress')){
+            return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+
+
+        item_container.$target.addClass('rating_in_progress');
+
+        var data = {
+            user_id: this.user_id,
+            type: item_container.item_type,
+            item_id: item_container.item_id
+        };
+
+        var parent;
+        var childs = [];
+
+        if(typeof item_container.item.childs == 'object' && item_container.item.childs.length > 0) {
+            var tmp_childs = item_container.item.childs;
+            var childs_type = tmp_childs[0].item_type;
+            var indexed = [];
+            //Si les enfants sont chargés
+            if(typeof self.items[childs_type] != 'undefined') {
+                $.map(self.items[childs_type],function(item, index) {
+                    indexed[item.item_id] = index;
+                });
+
+                for(var i in tmp_childs) {
+                    if(typeof indexed[tmp_childs[i].item_id] !== 'undefined') {
+                        childs.push(self.items[tmp_childs[i].item_type][indexed[tmp_childs[i].item_id]]);
+                    }
+                }
+            }
+
+        }
+
+        //si on a un item parent, on va le chercher
+        if(item_container.parent) {
+            for(var i in this.items[item_container.parent.item_type]) {
+                if(this.items[item_container.parent.item_type][i].item_id == item_container.parent.item_id ) {
+                    parent = this.items[item_container.parent.item_type][i];
+                }
+            }
+        }
+
+        //Si l'utilisateur a déjà noté, on trouve les id a supprimer
+        if(item_container.$target.hasClass('rated')) {
+            data.action = 'delete';
+            data.id = [];
+            for(var i in item_container.item.user_evaluations) {
+                if(item_container.item.user_evaluations[i].assoc_id == this.default_assoc.id) {
+                    data.id.push(item_container.item.user_evaluations[i].id);
+                }
+            }
+
+        //Sinon on demande la création d'une évaluation
+        } else {
+            data.action = 'create';
+            data.assoc_id = this.default_assoc.id;
+            data.score = 1;
+        }
+
+        $.ajax({
+            method:'POST',
+            url:BASEDIR + 'scripts/ajax/rate_item.php',
+            data: data,
+            success:function(result) {
+                //Si l'action s'est correctement déroulée
+                if(result.code == 'OK') {
+                    var nb_evaluations = result.data.length;
+
+                    //Cas d'une suppression
+                    if(data.action == 'delete') {
+                        //On supprime les évaluations de l'item
+                        item_container.item.user_evaluations = [];
+                        //Nombre d'évaluation a enlevée
+                        nb_evaluations = 0 - nb_evaluations;
+
+                        //Si l'item a un parent, on enlève les évaluations supprimées de celle du parent
+                        //Ex result.data = [123,1234,etc..]
+                        if(parent) {
+                            var i = parent.item.user_evaluations.length;
+                            while(i--) {
+                                if($.inArray(parent.item.user_evaluations[i].id.toString(),result.data) != -1) {
+                                    parent.item.user_evaluations.splice(i, 1);
+                                }
+                            }
+                        //Si l'item avait des enfant, on supprime les évaluations des enfants (note : on devrait vérifier par l'identifiant de l'éval supprimée)
+                        } else if(childs.length > 0) {
+                            for(var i in childs) {
+                                childs[i].item.user_evaluations = [];
+                                //Si l'enfant était évalué, on supprime l'évaluation
+                                if(childs[i].$target.hasClass('rated')) {
+                                    $('span.rating-counter', childs[i].$target).text(parseInt($('span.rating-counter', childs[i].$target).text()) - 1);
+                                    childs[i].$target.removeClass('rated');
+                                }
+                            }
+                        }
+
+                        //Une fois toutes les opérations on marque l'item comme non évalué
+                        item_container.$target.removeClass('rated');
+
+                    } else {
+                        //Si on a évaluer un parcours on ajoute la différence à l'existant
+                        if(item_container.item_type == 'course') {
+                            nb_evaluations = nb_evaluations - item_container.item.user_evaluations.length;
+                        }
+
+                        item_container.item.user_evaluations = result.data;
+                        //Si l'item a un parent on ajoute la nouvelle évaluation au parent
+                        if(parent) {
+                            parent.item.user_evaluations = parent.item.user_evaluations.concat(item_container.item.user_evaluations);
+                        //Si l'item a des enfants à mettre à jour
+                        } else if(childs.length > 0) {
+                            for(var i in childs) {
+                                childs[i].item.user_evaluations = [];
+                                for(var j in item_container.item.user_evaluations) {
+                                    if(childs[i].item_id == item_container.item.user_evaluations[j].item_id) {
+                                        childs[i].item.user_evaluations = [item_container.item.user_evaluations[j]];
+                                        if(!childs[i].$target.hasClass('rated')) {
+                                            childs[i].$target.addClass('rated');
+                                            $('span.rating-counter', childs[i].$target).text(parseInt($('span.rating-counter', childs[i].$target).text()) + 1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        item_container.$target.addClass('rated');
+                    }
+
+                    //mise à jour de l'affichage
+                    var $targets = $('span.rating-counter', item_container.$target);
+
+                    if($targets.length == 1) {
+                        $targets.text(parseInt($targets.text()) + nb_evaluations);
+                    } else {
+                        $targets.text(parseInt($($targets[0]).text()) + nb_evaluations);
+                    }
+
+                    //Si on a un parent, on ajoute ou en enlève du parent
+                    if(parent) {
+                        var $targets = $('span.rating-counter', parent.$target);
+
+                        if($targets.length == 1) {
+                            $targets.text(parseInt($targets.text()) + nb_evaluations);
+                        } else {
+                            $targets.text(parseInt($($targets[0]).text()) + nb_evaluations);
+                        }
+
+                        if(parent.item.user_evaluations.length == parent.item.childs.length) {
+                            if(!parent.$target.hasClass('rated')) parent.$target.addClass('rated');
+                        } else {
+                            if(parent.$target.hasClass('rated')) parent.$target.removeClass('rated');
+                        }
+                    }
+                }
+                if(self.default_assoc._criterion != 'undefined' && self.default_assoc._criterion.img_roll) {
+                    $(rating_class + ' img').attr('src', self.default_assoc._criterion.img);
+                    $(rating_class + '.rated img').attr('src', self.default_assoc._criterion.img_roll);
+                }
+        		item_container.$target.removeClass('rating_in_progress');
+            },
+            error:function(result) {
+			        item_container.$target.removeClass('rating_in_progress');
+            }
+        });
+
+    },
+    unloadAllItems: function unloadAllItems() {
+        this.items = {};
+    }
+});

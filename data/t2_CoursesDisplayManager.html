@@ -1,0 +1,368 @@
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+    return false;
+};
+
+var CoursesDisplayManager = Class.extend({
+    init: function(params) {
+        this.session_delimiter = params.session_delimiter;
+        this.open_session_id = params.open_session_id;
+        this.query = params.query;
+        this.reload_courses = false;
+        this.forced_search = params.forced_search;
+        this.state_loaded = false;
+        this.rating_item_manager = null;
+
+        if(typeof params.rating_item_manager != 'undefined') {
+            this.rating_item_manager = params.rating_item_manager;
+        }
+
+        this.bindHandlers();
+    },
+    /**
+     * Chargement initial
+     */
+    loadCourses: function loadCourses() {
+        var self = this;
+
+        //Si le conteneur de sco était là
+        $('#scos').hide().appendTo($('body'));
+
+        $('.ajax-courses').html('<div style="text-align: center;"><img src="' + BASEDIR + 'habillages/standard_5/images/loading1.gif"/></div>');
+
+        if(this.session_delimiter) {
+            $('.ajax-courses').removeData('session-id');
+            if(getUrlParameter('state_filter') === 'most_popular' && !this.state_loaded) {
+                $('ul.nav.state_list > li.active').click();
+            } else if(typeof this.open_session_id !== 'undefined') {
+                $('#session-' + this.open_session_id).click();
+            }
+
+
+        } else {
+            if(getUrlParameter('state_filter') === 'most_popular' && !this.state_loaded) {
+                $('ul.nav.state_list > li.active').click();
+            } else if(typeof this.open_session_id !== 'undefined') {
+                $.ajax({
+                    method: 'GET',
+                    url: 'get_courses.ajax.php' + this.query,
+                    success: function(data) {
+                        $('#ajax-courses').html(data);
+                        //On filtre par état
+                        self.filterStateCourses();
+                    }
+                });
+            }
+        }
+        this.state_loaded = true;
+    },
+    /**
+     * Attachement des handlers qui vont bien
+     */
+    bindHandlers: function bindHandlers() {
+        var self = this;
+
+        if(this.session_delimiter) {
+            $('.asession').click(this.sessionClickHandler.bind(this));
+        } else {
+            //TODO
+        }
+        //On récupère la classe d'état active
+        $('.ajax-courses').on('click', '.view_more', function() {
+            var state  = $('ul.state_list > li.active').attr('id').replace('li_', '');
+            self.viewMoreCourses(state);
+        });
+        $('ul.nav.state_list > li').bind('click', this.stateHandler.bind(this));
+    },
+    /**
+     * Handler du clic sur les filtre d'état
+     */
+    stateHandler: function stateHandler(event) {
+        var $target = $(event.currentTarget);
+
+        var showed_class = $target.attr('id').replace('li_', '');
+
+        //Si on avait forcé un recherche, on recharge la page pour nettoyer le filtre de recherche
+        if(this.forced_search) {
+            $(location).attr('href',BASEDIR + 'outils/parcours/?state_filter=' + showed_class);
+            return;
+        }
+
+        //On mets à jour le truc sélectionner
+        $('ul.nav.state_list > li').removeClass('active');
+        $target.addClass('active');
+
+        //Si on affiche les + populaire on masque tout
+        if(showed_class == 'most_popular') {
+            $.ajax({
+                async: false,
+                method: 'GET',
+                url: BASEDIR + 'scripts/ajax/setOpenElement.php?action=unset&type=course'
+            });
+
+            //On va devoir recharger les parcours
+            this.reload_courses = true;
+
+            //On vide le moteur de recherche
+            $('form[name="search_form"] input').val('');
+            $('#scos').appendTo('body');
+            $('.ajax-courses').html('');
+            $('#scos-container').html('');
+            $('#scos-course-arrow').hide();
+            $('.ajax-courses').hide();
+            $('.sessions-row').hide();
+
+            $('#most-pouplar-ajax-courses').html('<div style="text-align: center;"><img src="' + BASEDIR + 'habillages/standard_5/images/loading1.gif"/></div>');
+            $('#most-pouplar-ajax-courses').show();
+
+            //Si le gestionnaire de like était chargé on décharge tout ses items
+            if(this.rating_item_manager) {
+                this.rating_item_manager.unloadAllItems();
+            }
+            this.loadMostPopular();
+        } else {
+            $('#scos-course-arrow').show();
+            $('#most-pouplar-ajax-courses').html('');
+            $('#most-pouplar-ajax-courses').hide();
+
+            if(this.session_delimiter) {
+                $('.sessions-row').show();
+                $('.asession.selected .ajax-courses').show();
+            } else {
+                $('.ajax-courses').show();
+            }
+
+            if(this.reload_courses) {
+                this.reload_courses = false;
+                //Si le gestionnaire de like était chargé on décharge tout ses items
+                if(this.rating_item_manager) {
+                    this.rating_item_manager.unloadAllItems();
+                }
+                this.loadCourses();
+            } else {
+                this.filterStateCourses();
+            }
+        }
+    },
+    /**
+     * Handler du clic sur une sessions
+     * @param event
+     */
+    sessionClickHandler: function sessionClickHandler(event) {
+        var $self = $(event.currentTarget);
+        var session_id = $self.data('session-id');
+        var $course_container = $('#session-' + session_id + '-courses');
+        var $course_pager = $('#pager-session-' + session_id + '-courses');
+        var course_visible = $course_container.is(':visible');
+        var course_page = $self.data('course-page');
+
+        //Suppression de la classe qui indique la session selectionnée
+        $('.asession.selected').removeClass('selected');
+
+        //On masque tous les conteneur de parcours
+        $('.ajax-courses').hide();
+        $('.course-pager').hide();
+        $('.ajax-courses').prev().css('margin-bottom', '20px');
+
+        //Si j'ai recliqué sur la même session, et que les parcours n'étaient pas visible, on les raffiche simplement
+        if($course_container.data('session-id') == session_id) {
+            if(!course_visible) {
+                $self.css('margin-bottom', '0px');
+                $course_container.show();
+                $course_pager.show();
+                $self.addClass('selected');
+                this.setOpenSessionId(session_id);
+                this.filterStateCourses();
+                //Centrage sur la session cliquée
+                window.location.hash = '#session-' + session_id;
+                // On retire le masque sur tous les parcours
+                $('.acourse .course-mask').fadeOut();
+            }
+            //Sinon on les recharge en ajax
+        } else {
+            $self.addClass('selected');
+            $self.css('margin-bottom', '0px');
+            $course_pager.show();
+            $course_container.show();
+            this.showSessionCoursePage(session_id, course_page);
+            this.setOpenSessionId(session_id);
+        }
+    },
+    loadMostPopular: function loadMostPopular() {
+        $.ajax({
+            async: true,
+            method:'POST',
+            url:BASEDIR  + 'scripts/ajax/mostPopular.php',
+            success:function(data){
+                $('#most-pouplar-ajax-courses').html(data);
+            }
+        });
+    },
+    /**
+     * Filtre les parcours affiché en fonction de leur état
+     */
+    filterStateCourses: function filterStateCourses() {
+
+        if($('ul.nav.state_list > li').length == 0) {
+            return;
+        }
+
+        var self = this;
+        //Récupération du container de parcours visible:
+        var $course_container = $('.courses-container:visible');
+        var course_ls_count = $('.courses', $course_container).data('courses-ls-count');
+
+        if( typeof course_ls_count == 'undefined') {
+            course_ls_count = new Array();
+        }
+        //On masque les scos s'il y en a d'affichés (pour le moment plus simple)
+        $('#scos').hide();
+        //On récupère la classe que l'on veut affichér
+        var showed_class = $('ul.nav.state_list > li.active').attr('id').replace('li_', '');
+
+
+        //Pour chaque état
+        $('ul.nav.state_list > li').each(function() {
+
+            //On récupère la classe d'état correspondante
+            var filter_class = $(this).attr('id').replace('li_', '');
+
+            //Si c'est celle qu'on veut afficher, on affiche
+            if (filter_class == showed_class) {
+                $(this).addClass('active');
+                $('.' + showed_class).show();
+
+                if(showed_class != 'all') {
+                    var nb_state = $('.' + showed_class, $course_container).length;
+
+                    if(typeof course_ls_count[showed_class] == 'undefined') {
+                        course_ls_count[showed_class] = 0;
+                    }
+                    
+                    //Si on a affiché aucun parcours de l'état demandé, on les charge
+                    if(nb_state == 0 && course_ls_count[showed_class] > 0) {
+                        self.viewMoreCourses(showed_class);
+                        nb_state = $('.' + showed_class).length;
+                    }
+                    //Si on a pas affiché tous les parcours de l'état, on affiche le btn "Voir plus" sinon on le masque
+                    if(nb_state < course_ls_count[showed_class]) $('.view_more', $course_container).show();
+                    else $('.view_more', $course_container).hide();
+
+                }
+                //Sinon on masque
+            } else {
+                $(this).removeClass('active');
+                $('.' + filter_class).hide();
+            }
+        });
+
+        //Si "tous", bah on affiche tout...
+        if (showed_class == 'all') {
+            $('div.row.courses > div.acourse').show();
+        }
+    },
+    /**
+     * Changement de page de parcours dans une session
+     * @param session_id
+     * @param page
+     */
+    showSessionCoursePage: function showSessionCoursePage(session_id, page) {
+        var self = this;
+        var $course_container = $('#session-' + session_id + '-courses');
+
+        //Effacement des boutons pré-chargé si il y en a
+        if(typeof divMenus != 'undefined') {
+            for(var i in divMenus) {
+                if(i.match(/sub_menu[0-9]+/) || i.match(/sub_menu_sco[0-9]+/)) {
+                    $('form[id$="div_'+i+'"]').remove();
+                    $('div[id="div_'+i+'"]').remove();
+                }
+            }
+        }
+
+        $course_container.html('<div class="courses-loading"><img src="' + BASEDIR + 'habillages/standard_5/images/loading1.gif" /></div>');
+
+        $.ajax({
+            method: 'GET',
+            url: 'get_courses.ajax.php?session_id=' + session_id + '&page=' + page,
+            success: function(data) {
+                $course_container.data('session-id', session_id);
+                $course_container.html(data);
+                $('table.tableau_grand thead', $course_container).remove();
+                //Centrage sur la session cliquée
+                window.location.hash = '#session-' + session_id;
+                //On filtre par état
+                self.filterStateCourses();
+                // On retire le masque sur tous les parcours
+                $('.acourse .course-mask').fadeOut();
+            }
+        });
+    },
+    viewMoreCourses: function viewMoreCourses(state) {
+        //Récupération du container de parcours visible:
+        var $course_container = $('.courses-container:visible');
+        var course_count = $('.courses', $course_container).data('courses-count');
+        var course_ls_count = $('.courses',$course_container).data('courses-ls-count');
+        var session_id = $course_container.data('session-id');
+        var displayed_courses;
+        var already_load = new Array();
+        var max_courses = null;
+
+        if(state == 'all') {
+            displayed_courses = $('.acourse', $course_container).length;
+            max_courses = course_count;
+        } else {
+            displayed_courses = $('.' + state, $course_container).length;
+            max_courses = course_ls_count[state];
+        }
+
+        $('.acourse', $course_container).each(function() {
+            already_load.push($(this).data('id'));
+        });
+
+        if(displayed_courses < max_courses) {
+            $('#course_loading').show();
+            $.ajax({
+                async: false,
+                method:'POST',
+                url:BASEDIR  + 'outils/parcours/more_learner_courses.ajax.php?session_id=' + session_id,
+                data: {
+                    'state':state,
+                    'loaded':already_load
+                },
+                success:function(data){
+                    $('#scos').hide();
+                    $('#course_loading').hide();
+                    $('.courses', $course_container).append(data);
+
+                    if( (state == 'all' && $('.acourse', $course_container).length  == max_courses) || ($('.' + state, $course_container).length == max_courses)) {
+                        $('.view_more', $course_container).hide();
+                    }
+                }
+            });
+        }
+    },
+    setOpenSessionId : function setOpenSessionId(session_id) {
+        this.setOpenElementId('session', session_id);
+    },
+    setOpenCourseId: function setOpenCourseId(course_id) {
+        this.setOpenElementId('course', course_id);
+    },
+    setOpenElementId: function setOpenElementId(element_type, element_id) {
+        var element_type_id = element_type == 'session' ? 'session_id' : 'course_id';
+        $.ajax({
+            method: 'GET',
+            url: BASEDIR + 'scripts/ajax/setOpenElement.php?action=set&' + element_type_id + '=' + element_id
+        });
+    }
+});

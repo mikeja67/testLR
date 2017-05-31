@@ -1,0 +1,11 @@
+GET https://peformation.elmg.net/scripts/ajax/setOpenElement.php?action=set&course_id=159 HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0
+Accept: */*
+Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate, br
+X-Requested-With: XMLHttpRequest
+Referer: https://peformation.elmg.net/outils/parcours/index.php?open_course=159
+Cookie: ELMGSESSID=i1i6gjp5f725kjjbngo987gie7
+Host: peformation.elmg.net
+Connection: Close
+

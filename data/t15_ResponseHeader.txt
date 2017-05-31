@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Date: Thu, 04 May 2017 13:01:01 GMT
+Server: Apache
+P3P: CP="CAO PSA OUR"
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+X-Frame-Options: SAMEORIGIN
+Content-Length: 24
+Connection: close
+Content-Type: text/html
+

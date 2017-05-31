@@ -1,0 +1,11 @@
+[t18]
+FileName1=t18.htm
+URL1=https://peformation.elmg.net/outils/parcours/launch_wrapper.php?id_p=159&id_sco=2&session_id=25
+Total=1
+RequestHeaderFile=t18_RequestHeader.txt
+RequestBodyFile=NONE
+ResponseHeaderFile=t18_ResponseHeader.txt
+ContentType=text/html
+SnapshotXmlFile=snapshot_18.xml
+[ProtocolInfo]
+ProtocolId=QTWeb

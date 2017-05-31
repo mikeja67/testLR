@@ -1,0 +1,58 @@
+var AjaxPager = Class.extend({
+    init: function(params) {
+        this.current_page = params.current_page;
+        this.page_count = params.page_count;
+        this.element_count = params.element_count;
+
+        this.element_by_page = params.element_by_page;
+
+        this.page_change_callback = params.page_change_callback;
+        this.page_change_callback_params = params.page_change_callback_params;
+
+        this.next_element = params.next_element;
+        this.prev_element = params.prev_element;
+        this.txt_element = params.txt_element;
+
+        //Bind des évent au click sur les éléments de page suivante / précédente
+        $(this.next_element).click(this.showNextPage.bind(this));
+        $(this.prev_element).click(this.showPrevPage.bind(this));
+
+        this.updateDisplay();
+    },
+    showNextPage: function() {
+        if(this.current_page < this.page_count) {
+            this.current_page++;
+            this.page_change_callback.apply(null, this.page_change_callback_params.concat([this.current_page]));
+        }
+        this.updateDisplay();
+    },
+    showPrevPage: function() {
+        if(this.current_page > 1) {
+            this.current_page--;
+            this.page_change_callback.apply(null, this.page_change_callback_params.concat([this.current_page]));
+        }
+        this.updateDisplay();
+    },
+    updateDisplay: function() {
+        var start_element_count = ((this.current_page - 1) * this.element_by_page) + 1;
+        var end_element_count = Math.min(this.element_count, this.element_by_page * this.current_page);
+
+        //Si on est a la fin on disable le next
+        if(end_element_count == this.element_count) {
+            this.next_element.addClass('disabled');
+        } else {
+            this.next_element.removeClass('disabled');
+        }
+
+        //Si on est au début
+        if(start_element_count == 1) {
+            this.prev_element.addClass('disabled');
+        } else {
+            this.prev_element.removeClass('disabled');
+        }
+
+        this.txt_element.text(
+            this.txt_element.text().replace(/[0-9]+\s+-\s+[0-9]+\s+(.*)\s+[0-9]+/, start_element_count + ' - ' + end_element_count + ' $1 ' + this.element_count)
+        );
+    }
+});

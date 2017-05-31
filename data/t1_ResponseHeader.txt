@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Date: Thu, 04 May 2017 12:58:58 GMT
+Server: Apache
+P3P: CP="CAO PSA OUR"
+Set-Cookie: ELMGSESSID=9b4gc5fcv7v355v8lgimk855i5; path=/; secure; HttpOnly
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+X-Frame-Options: SAMEORIGIN
+Vary: Accept-Encoding
+Content-Encoding: gzip
+Content-Length: 1163
+Connection: close
+Content-Type: text/html
+

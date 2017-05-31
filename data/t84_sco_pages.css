@@ -1,0 +1,53 @@
+.page-title-container {
+    margin-top: 8px;
+    margin-bottom: 17px;
+}
+.page-title-container span {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.page-title-container .page-title {
+    font-size: 15px;
+    font-weight: bold;
+    padding-left: 10px;
+    color:#8B8D8E;
+}
+
+.bitestrap .launch-sco-page-container > .row.clearfix {
+    margin: 0px -10px -10px -10px;
+}
+
+.bitestrap .launch-sco-page-container {
+    margin-top: 40px;
+}
+
+.launch-sco-page-row {
+    padding: 20px;
+}
+
+.bitestrap .launch-sco-page-container .launch-sco-page-row:first-child {
+    border-bottom: 1px solid #8B8D8E;
+}
+.launch-sco-page-infos .launch-sco-page-title {
+    margin-bottom: 25px;
+}
+
+.launch-sco-page-title .sco-title {
+    color: #000;
+    font-size: 20px;
+}
+
+.launch-sco-page-title .sco-description {
+    color: #8B8D8E;
+    font-size: 15px;
+    font-style: italic;
+}
+.launch-sco-page-infos .sco-tracking {
+    text-align: right;
+}
+
+span.rating {
+    display: inline;
+    cursor: pointer;
+}

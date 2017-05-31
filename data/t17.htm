@@ -1,0 +1,555 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>TEST VIDEO</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="shortcut icon" href="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/favicon.ico"/>
+	<script type="text/javascript" src="../../lib/scripts/jquery.js"></script>
+	<script type="text/javascript"
+			src="../../lib/scripts/jquery_plugin/ajaxq.jquery.js?35994f33be9ec34fc83c1ee4a14b41e5"></script>
+	<link rel="shortcut icon" href="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/favicon.ico"/>
+	<script type="text/javascript" language="javascript">
+
+		function ELMG_COURSE_UI() {
+		}
+
+		//On garde l'url de base dans le contexte.
+		var base_url = window.location.href.replace(/\/[^/]+$/, '') + '/';
+		ELMG_COURSE_UI.current_course_id = 0;
+		ELMG_COURSE_UI.current_sco_id = 0;
+		ELMG_COURSE_UI.current_session_id = 25;
+		ELMG_COURSE_UI.next_course_id = 0;
+		ELMG_COURSE_UI.next_sco_id = 0;
+		ELMG_COURSE_UI.launch_force = false;
+		ELMG_COURSE_UI.on_sco_page = false;
+		ELMG_COURSE_UI.is_panel_open = false;
+		ELMG_COURSE_UI.opened_panel_name = '';
+		ELMG_COURSE_UI.scos = new Array();
+		ELMG_COURSE_UI.last_val = false;
+		ELMG_COURSE_UI.current_comment_n = 0;
+		ELMG_COURSE_UI.tracking = true;
+		ELMG_COURSE_UI.tracking_started = false;
+		ELMG_COURSE_UI.is_summary_open = false;
+		ELMG_COURSE_UI.popup = null;
+		ELMG_COURSE_UI.current_sco_popup = false;
+		ELMG_COURSE_UI.current_sco_terminated = false;
+		ELMG_COURSE_UI._check_connection = false;
+				ELMG_COURSE_UI._check_connection_interval = 5000;
+		ELMG_COURSE_UI._check_connection_texts = {
+			'disconnected': 'Vous avez &eacute;t&eacute; d&eacute;connect&eacute;<br /><br /><a href="#" onclick="if(parent.opener) parent.opener.parent.ELMG_COURSE_UI.goToLogin(); else parent.parent.ELMG_COURSE_UI.goToLogin();">Cliquez ici pour vous authentifier &agrave; nouveau</a>',
+			'waiting': '<div class="valign_middle"><img src="../../habillages/standard_5/images/loading1.gif" />&nbsp;Veuillez patienter, enregistrement des r&eacute;sultats en cours</div>',
+			'unknown': 'Une erreur inconnue est survenue'
+		};
+		ELMG_COURSE_UI.current_popup_frame;
+		ELMG_COURSE_UI._terminer_tracking_current_callback;
+		ELMG_COURSE_UI._buffer_tracking_empty = true;
+		ELMG_COURSE_UI._terminer_tracking_currently = false;
+		ELMG_COURSE_UI._current_tid = 0;
+		ELMG_COURSE_UI._terminer_tracking_ajax_callback = null;
+
+		$(window).bind('beforeunload', function () {
+			if (!ELMG_COURSE_UI._can_quit_properly) {
+				return "Attention quitter votre navigateur risque d'endommager les r\u00e9sultats, \u00eates-vous s\u00fbr de vouloir continuer?";
+			}
+			return;
+		});
+
+		ELMG_COURSE_UI.goToLogin = function () {
+			try {
+				ELMG_COURSE_UI.connection_error_window.close();
+			} catch (e) {
+			}
+
+			window.location = '../../';
+		}
+
+		ELMG_COURSE_UI.scos[1]={active:false,summary:false,tracking:false,popup:false,notepad:false,tutor:false,froggylearn:false,barnav:{active:true,close:true,prev:false,next:false}, close_page:{active:true}};
+ELMG_COURSE_UI.scos[2]={active:false,summary:false,tracking:false,popup:false,notepad:false,tutor:false,froggylearn:false,barnav:{active:true,close:true,prev:false,next:false}, close_page:{active:true}};
+
+		ELMG_COURSE_UI.exitTracking = function () {
+			// Passage des requêtes en synchrone à la fermeture d'un module
+			jQuery.ajaxSetup({async: false});
+		};
+
+		// La redirection à la sortie d'un parcours (retour vers la page index de parcours par exemple)
+		ELMG_COURSE_UI.exitCourse = function () {
+
+			//On appel une page en ajax qui va cloturer les trackings (ce qui était fait dans l'index de outils/parcours)
+			$.ajax({
+				async: false,
+				data: 'recalc_tracking=true',
+				url:"..\/..\/scripts\/ajax\/endTracking.php",
+				method: 'POST'
+			});
+			window.location = base_url + "..\/..\/outils\/parcours\/quit_sco.php?id_p=159&id_sco=2&session_id=25";
+		};
+
+		// La pile d'ajax. Tout appel ajax doit passer par cette fonction
+		ELMG_COURSE_UI.my_ajaxq = function (options) {
+			ajaxq("ELMG_COURSE_UI_AJAXQ", options);
+		};
+
+		// Remplacement de sco_frame (par blank ou reload par exemple)
+		ELMG_COURSE_UI.replaceScoFrame = function (page) {
+			ELMG_COURSE_UI._can_quit_properly = true;
+
+			var url = "https:\/\/peformation.elmg.net\/outils\/parcours\/" +page;
+			try {
+				window.frames['launch_wrapper_content'].window.frames['sco_frame'].window.location = url;
+			} catch (e) {
+				// if ie8
+				if (document.all && document.querySelector && !document.addEventListener) {
+					var frame = window.frames['launch_wrapper_content'].window.document.getElementById('sco_frame');
+					var parent = window.frames['launch_wrapper_content'].window.document.getElementById('sco_frame').parentNode;
+					parent.removeChild(frame);
+
+					var new_frame = window.frames['launch_wrapper_content'].window.document.createElement('frame');
+					new_frame.setAttribute('src', url);
+					parent.appendChild(new_frame);
+				} else {
+					throw new Exception('Browser error');
+				}
+			}
+		};
+
+		// [LMS] Bouton quitter barre navigation
+		ELMG_COURSE_UI.lmsExitSCO = function () {
+			try {
+				ELMG_COURSE_UI.replaceScoFrame('reload.html');
+			} catch (e) {
+				ELMG_COURSE_UI.exitCourse();
+				try {
+					ELMG_COURSE_UI.connection_error_window.close();
+				} catch (e) {
+				}
+			}
+		};
+
+		// [LMS] Appelée par la page reload pour terminer
+		ELMG_COURSE_UI.lmsExitScoCallback = function () {
+			ELMG_COURSE_UI.terminer_tracking(function (data) {
+				if (ELMG_COURSE_UI.scos[ELMG_COURSE_UI.current_sco_id].close_page.active) {
+					ELMG_COURSE_UI.showCloseScoPage();
+				} else {
+					ELMG_COURSE_UI.exitCourse();
+				}
+			});
+		};
+
+		// [LMS] Bouton suivant/précendent/sommaire barre navigation
+		ELMG_COURSE_UI.lmsNavSCO = function (id_p, id_sco) {
+			//On appel une page en ajax qui va cloturer les trackings (ce qui était fait dans l'index de outils/parcours)
+			$.ajax({
+				async: false,
+				data: 'recalc_tracking=true',
+				url:"..\/..\/scripts\/ajax\/endTracking.php",
+				method: 'POST'
+			});
+			ELMG_COURSE_UI.next_course_id = id_p;
+			ELMG_COURSE_UI.next_sco_id = id_sco;
+			try {
+				ELMG_COURSE_UI.replaceScoFrame('reload_next.html');
+			} catch (e) {
+				ELMG_COURSE_UI.showSCO(ELMG_COURSE_UI.next_course_id, ELMG_COURSE_UI.next_sco_id);
+			}
+		};
+
+		// [LMS] Appelée par la page reload_next pour naviguer
+		ELMG_COURSE_UI.lmsNavScoCallback = function () {
+			ELMG_COURSE_UI.terminer_tracking(function (data) {
+				if (ELMG_COURSE_UI.scos[ELMG_COURSE_UI.current_sco_id].close_page.active) {
+					ELMG_COURSE_UI.showCloseScoPage();
+				} else {
+					ELMG_COURSE_UI.showSCO(ELMG_COURSE_UI.next_course_id, ELMG_COURSE_UI.next_sco_id);
+				}
+			});
+		};
+
+
+		// [SCO] Appel SCORM LMSFinish/Terminate
+		ELMG_COURSE_UI.terminateSCO = function () {
+			ELMG_COURSE_UI._can_quit_properly = true;
+			ELMG_COURSE_UI.current_sco_terminated = true;
+			ELMG_COURSE_UI.exitTracking();
+
+			// if (ELMG_COURSE_UI.is_summary_open)
+			ELMG_COURSE_UI.terminer_tracking(function (data) {
+				//Si on a une page après fermeture, on redirige dessus
+				if (ELMG_COURSE_UI.scos[ELMG_COURSE_UI.current_sco_id].close_page.active) {
+					if (data.indexOf(';') > -1) {
+						var params = data.split(';');
+						ELMG_COURSE_UI.next_course_id = params[0];
+						ELMG_COURSE_UI.next_sco_id = params[1];
+					}
+					ELMG_COURSE_UI.showCloseScoPage();
+				} else if (ELMG_COURSE_UI.next_course_id && ELMG_COURSE_UI.next_sco_id) {
+					ELMG_COURSE_UI.showSCO(ELMG_COURSE_UI.next_course_id, ELMG_COURSE_UI.next_sco_id);
+				} else {
+					switch (data) {
+						case 'OK':
+						case 'stop':
+							ELMG_COURSE_UI.exitCourse();
+							break;
+						default:
+							if (data.indexOf(';') > -1) {
+								var params = data.split(';');
+								ELMG_COURSE_UI.showSCO(params[0], params[1]);
+							}
+					}
+				}
+
+
+			});
+		};
+
+		// Navigation au sco X, Y
+		ELMG_COURSE_UI.showSCO = function (id_p, id_sco) {
+			ELMG_COURSE_UI.next_course_id = 0;
+			ELMG_COURSE_UI.next_sco_id = 0;
+			ELMG_COURSE_UI.goToScoRequest(id_p, id_sco);
+		};
+
+		// terminer tracking du sco en cours
+		ELMG_COURSE_UI.terminer_tracking = function (callback) {
+			ELMG_COURSE_UI.terminer_tracking_ajax(callback);
+		};
+
+		ELMG_COURSE_UI.terminer_tracking_ajax = function (callback) {
+			if (!ELMG_COURSE_UI._can_quit_properly) {
+				return false;
+			}
+			ELMG_COURSE_UI._terminer_tracking_ajax_callback = callback;
+			ELMG_COURSE_UI._terminer_tracking_currently = true;
+			ELMG_COURSE_UI.setCheckConnectionMessage(ELMG_COURSE_UI._check_connection_texts['waiting'], '100%');
+			if (ELMG_COURSE_UI.tracking_started) {
+				// Si la pile de tracking à envoyer est vide
+				if (ELMG_COURSE_UI._buffer_tracking_empty) {
+					var args = 'action=reload&id_p=' + ELMG_COURSE_UI.current_course_id + '&id_sco=' + ELMG_COURSE_UI.current_sco_id + '&id_tracking=' + ELMG_COURSE_UI._current_tid;
+					var token='&csrf=cacd471b86507197c0a6143ef8594ba7688391a5';args=args+token;					$.ajax({
+						async: false,
+						url: 'api.php',
+						data: args,
+						type: 'POST',
+						success: function (data) {
+							callback.apply(null, [data]);
+							try {
+								// BEGIN Modif perf : Reset le tick si le dernier appel d'api a fonctionné
+								ELMG_COURSE_UI.check_connection_reset();
+								// END Modif perf : Reset le tick si le dernier appel d'api a fonctionné
+								ELMG_COURSE_UI.connection_error_window.close();
+							} catch (e) {
+							}
+						},
+						error: function (data) {
+							callback.apply(null, ["OK"]);
+						}
+					});
+					ELMG_COURSE_UI._terminer_tracking_ajax_callback = null;
+					// Sinon on attend
+				} else {
+					setTimeout(function () {
+						ELMG_COURSE_UI.terminer_tracking_ajax(ELMG_COURSE_UI._terminer_tracking_ajax_callback);
+					}, 200);
+				}
+			} else {
+				callback.apply(null, ["OK"]);
+			}
+		};
+
+		ELMG_COURSE_UI.setGoToScoRequest = function (course_id, sco_id) {
+			this.next_course_id = course_id;
+			this.next_sco_id = sco_id;
+		};
+
+		ELMG_COURSE_UI.goToSco = function (course_id, sco_id) {
+			this.setGoToScoRequest(course_id, sco_id);
+			if (this.on_sco_page) this.launch_force = true;
+			this.goToScoRequest(course_id, sco_id);
+			setTimeout("ELMG_COURSE_UI.resetNextIds()", 1000);
+		};
+
+		ELMG_COURSE_UI.resetNextIds = function () {
+			this.next_course_id = 0;
+			this.next_sco_id = 0;
+		};
+
+		// Aller à un sco
+		ELMG_COURSE_UI.goToScoRequest = function (course_id, sco_id) {
+			if (sco_id >2) sco_id = 1;
+			this.current_course_id = course_id;
+			this.current_sco_id = sco_id;
+			this.on_sco_page = false;
+			this.tracking = this.scos[sco_id].tracking;
+
+			this.showBarNav(this.scos[sco_id].barnav.active, sco_id);
+
+			if (this.scos[sco_id].summary){
+				this.showSummary(this.scos[sco_id].summary, sco_id);
+			}
+			if (this.scos[sco_id].tutor || this.scos[sco_id].froggylearn || this.scos[sco_id].notepad){
+				this.showPanel(false);
+				window.frames['elmg_panel'].window.location = '/outils/parcours/sco_panel.php?id_p=' + course_id + '&id_sco=' + sco_id + (this.current_session_id ? '&session_id=' + this.current_session_id : '');;
+			}
+
+			if (this.scos[sco_id].active && !this.launch_force) {
+				window.frames['launch_wrapper_content'].window.location = '/outils/parcours/sco_page.php?id_p=' + this.current_course_id + '&id_sco=' + this.current_sco_id + (this.current_session_id ? '&session_id=' + this.current_session_id : '');
+				this.current_course_id = 0;
+				this.current_sco_id = 0;
+			} else {
+				this.launch_force = false;
+				this.on_sco_page = false;
+				this.is_panel_open = false;
+				this.current_sco_popup = this.scos[sco_id].popup;
+				window.frames['launch_wrapper_content'].window.location = '/outils/parcours/launch_wrapper.php?id_p=' + this.current_course_id + '&id_sco=' + this.current_sco_id + (this.current_session_id ? '&session_id=' + this.current_session_id : '') + '' + (this.scos[sco_id].popup ? '&popup=1' : '');
+			}
+		};
+
+		// OBSOLETE
+		ELMG_COURSE_UI.exitAll = function () {
+		};
+
+		// Affichage du sommaire
+		ELMG_COURSE_UI.showSummary = function (view, sco_id) {
+
+			var old_col_width = $('#elmg_sco_summary_frame').attr('cols');
+			if (view) {
+				var new_col_width = old_col_width.replace('60px,*', '380px,*');
+				document.getElementById('elmg_sco_summary_frame').setAttribute('cols', new_col_width, 0);
+				var bodySummary = window.frames['summary'].document.getElementById('sco-summary');
+				if (bodySummary) {
+					bodySummary.childNodes[1].className = "open";
+				} else {
+					window.frames['summary'].window.location = '/outils/parcours/summary.php?id_p=' + this.current_course_id + '&id_sco=' + sco_id;
+				}
+			} else {
+				if (window.frames['summary'].document.getElementById('sco-summary') != null) {
+					var new_col_width = old_col_width.replace('380px,*', '60px,*');
+					document.getElementById('elmg_sco_summary_frame').setAttribute('cols', new_col_width, 0);
+					window.frames['summary'].document.getElementById('sco-summary').childNodes[1].className = "close";
+				}
+			}
+		};
+
+		// Affichage de la barre de navigation
+		ELMG_COURSE_UI.showBarNav = function (view, sco_id) {
+			if (view) {
+				var new_rows_height = '60,*';
+				var old_rows_height = $('#elmg_global_frame').attr('rows');
+				if (old_rows_height != '0,*') new_rows_height = old_rows_height;
+				document.getElementById('elmg_global_frame').setAttribute('rows', '' + new_rows_height, 0);
+				window.frames['elmg_bar_nav'].window.location = '/outils/parcours/bar_nav.php?id_p=' + this.current_course_id + '&id_sco=' + sco_id;
+			} else {
+				document.getElementById('elmg_global_frame').setAttribute('rows', '0,*', 0);
+				window.frames['elmg_bar_nav'].window.location = '/outils/parcours/blank.html';
+			}
+		};
+
+		// Affichage d'un panel en bas de la page
+		ELMG_COURSE_UI.showPanel = function (view) {
+			var old_cols = document.getElementById('elmg_sco_summary_frame').getAttribute('cols');
+			var bodySummary = window.frames['elmg_panel'].document.getElementById('sco-panel');
+			if (view) {
+				if (bodySummary) {
+					bodySummary.childNodes[1].className = "open";
+					document.getElementById('elmg_sco_summary_frame').setAttribute('cols', old_cols.replace('*,60px', '*,' + '380px'), 0);
+				} else {
+					window.frames['elmg_panel'].window.location = '/outils/parcours/sco_panel.php?id_p=' +
+						this.current_course_id + '&id_sco=' + this.current_sco_id
+						+ (this.current_session_id > 0 ? '&session_id=' + this.current_session_id : '');
+					parent.ELMG_COURSE_UI.is_panel_open = false;
+				}
+			} else {
+				if (bodySummary){
+					parent.ELMG_COURSE_UI.is_panel_open = false;
+					bodySummary.childNodes[1].className = "close"
+					document.getElementById('elmg_sco_summary_frame').setAttribute('cols', old_cols.replace('*,' + '380px', '*,60px'), 0);
+				}
+
+			}
+		};
+
+		// Les popups
+		ELMG_COURSE_UI.showPopup = function (url, label) {
+			ELMG_COURSE_UI.popup = window.open(url, label, 'location=no, menubar=no');
+		};
+		ELMG_COURSE_UI.showElmgPopup = function (label, course_id, sco_id, link_key) {
+			ELMG_COURSE_UI.popup = window.open("../../shared/course_popup.php?course_id=" + course_id + "&sco_id=" + sco_id + "&link_key=" + link_key, label, 'location=no, menubar=no');
+		};
+
+		// Sauvegarde des commentaires
+		ELMG_COURSE_UI.doSaveCurrentComment = function (v) {
+			if (this.opened_panel_name == 'notepad' && this.is_panel_open) {
+				var frm_API_1484_11 = window.frames['launch_wrapper_content'].API_1484_11;
+				if (this.last_val == false && frm_API_1484_11 != null) this.last_val = frm_API_1484_11.GetValue('cmi.location');
+				if (this.opened_panel_name == 'notepad' && this.is_panel_open) {
+					if (frm_API_1484_11 != null) {
+						if (this.current_comment_n == 0) {
+							this.current_comment_n = frm_API_1484_11.GetValue('cmi.comments_from_learner._count');
+						}
+						var textarea_notepad = window.frames['elmg_panel'].document.getElementById('textarea_notepad');
+						if (textarea_notepad != null && window.frames['elmg_panel'].document.getElementById('textarea_notepad').value != '') {
+							frm_API_1484_11.SetValue(
+								'cmi.comments_from_learner.' + this.current_comment_n + '.comment',
+								window.frames['elmg_panel'].document.getElementById('textarea_notepad').value
+							);
+							frm_API_1484_11.SetValue('cmi.comments_from_learner.' + this.current_comment_n + '.location', this.last_val);
+							this.current_comment_n++;
+						}
+					}
+				}
+			}
+			this.last_val = v;
+		};
+
+		// Chargement des commentaires
+		ELMG_COURSE_UI.doLoadCurrentComment = function (v) {
+			if (this.opened_panel_name == 'notepad' && this.is_panel_open) {
+				var frm_API_1484_11 = window.frames['launch_wrapper_content'].API_1484_11;
+				if (frm_API_1484_11 != null) {
+					var comments_count = frm_API_1484_11.GetValue('cmi.comments_from_learner._count');
+					var current_location = v;
+					for (var i = (comments_count - 1); i >= 0; i--) {
+						if (frm_API_1484_11.GetValue('cmi.comments_from_learner.' + i + '.location') == current_location) {
+							var current_comment = frm_API_1484_11.GetValue('cmi.comments_from_learner.' + i + '.comment');
+							window.frames['elmg_panel'].document.getElementById('textarea_notepad').value = current_comment;
+							return true;
+						}
+					}
+					if (window.frames['elmg_panel'].document.getElementById('textarea_notepad') != null) {
+						window.frames['elmg_panel'].document.getElementById('textarea_notepad').value = '';
+					}
+				}
+			}
+		};
+
+		// BEGIN Modif perf : Reset le tick si le dernier appel d'api a fonctionné
+		ELMG_COURSE_UI.check_connection_reset = function () {
+			clearTimeout(ELMG_COURSE_UI._check_connection_timer);
+			ELMG_COURSE_UI._check_connection_timer = setTimeout(ELMG_COURSE_UI.checkConnection, ELMG_COURSE_UI._check_connection_interval);
+		}
+		// END Modif perf : Reset le tick si le dernier appel d'api a fonctionné
+		// Vérification de la connexion
+		ELMG_COURSE_UI.checkConnection = function () {
+			if (ELMG_COURSE_UI._check_connection) {
+				ajaxq("ELMG_COURSE_UI_TICK_AJAXQ", {
+					async: true,
+					url: 'tick.php',
+					data: {
+						't': new Date().getTime(),
+						'trk_id': ELMG_COURSE_UI._current_tid,
+						'csrf': "cacd471b86507197c0a6143ef8594ba7688391a5"},
+					last_tid: ELMG_COURSE_UI._current_tid,
+					type: 'POST',
+					timeout: 5000,
+					success: function (e) {
+						if (!ELMG_COURSE_UI._terminer_tracking_currently) {
+							if (e == 'OK') {
+								ELMG_COURSE_UI.setCheckConnectionMessage('');
+							} else if (e == 'disconnected') {
+								ELMG_COURSE_UI.disconnect();
+							} else if (e == 'terminated' && this.last_tid == ELMG_COURSE_UI._current_tid) {
+								ELMG_COURSE_UI.lmsExitSCO();
+							} else if (this.last_tid == ELMG_COURSE_UI._current_tid) {
+								ELMG_COURSE_UI.setCheckConnectionMessage(ELMG_COURSE_UI._check_connection_texts['unknown']);
+							}
+
+							if (e != 'disconnected' && this.last_tid == ELMG_COURSE_UI._current_tid) {
+								// BEGIN Modif perf : Reset le tick si le dernier appel d'api a fonctionné
+								ELMG_COURSE_UI.check_connection_reset();
+								// END Modif perf : Reset le tick si le dernier appel d'api a fonctionné
+							}
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						if (!ELMG_COURSE_UI._terminer_tracking_currently) {
+							if (!ELMG_COURSE_UI._buffer_tracking_empty) ELMG_COURSE_UI.setCheckConnectionMessage(ELMG_COURSE_UI._check_connection_texts['waiting']);
+
+							// BEGIN Modif perf : Reset le tick si le dernier appel d'api a fonctionné
+							ELMG_COURSE_UI.check_connection_reset();
+							// END Modif perf : Reset le tick si le dernier appel d'api a fonctionné
+						}
+					}
+				});
+			}
+		};
+
+		// Affiche le message de déconnexion
+		ELMG_COURSE_UI.disconnect = function () {
+			ELMG_COURSE_UI.setCheckConnectionMessage(ELMG_COURSE_UI._check_connection_texts['disconnected'], '100%');
+			ELMG_COURSE_UI.showBarNav(false, ELMG_COURSE_UI.current_sco_id);
+			ELMG_COURSE_UI.showSummary(false, ELMG_COURSE_UI.current_sco_id);
+			ELMG_COURSE_UI.showPanel(false);
+			ELMG_COURSE_UI.stopCheckConnection();
+		};
+
+		// Démarre la vérification de la connexion
+		ELMG_COURSE_UI.startCheckConnection = function () {
+			ELMG_COURSE_UI._check_connection = true;
+			ELMG_COURSE_UI.checkConnection();
+		};
+
+		// Arrête la vérification de la connexion
+		ELMG_COURSE_UI.stopCheckConnection = function () {
+			ELMG_COURSE_UI._check_connection = false;
+		};
+
+		ELMG_COURSE_UI.setCheckConnectionMessage = function (msg, height) {
+			if (height == undefined || height == null) height = 50;
+			if (msg == '') height = 0;
+
+			var frm = ELMG_COURSE_UI.connection_error_window.document.getElementById('sco_wrapper_frame');
+
+			if (msg == '' && frm.getAttribute('rows') != '*,0') frm.setAttribute('rows', '*,0', 0);
+			else if (frm.getAttribute('rows') != '*,' + height) frm.setAttribute('rows', '*,' + height, 0);
+
+			if (ELMG_COURSE_UI.connection_error_window.frames['connection_error'] != null && ELMG_COURSE_UI.connection_error_window.frames['connection_error'].document.getElementById('msg') !== null) {
+				ELMG_COURSE_UI.connection_error_window.frames['connection_error'].document.getElementById('msg').innerHTML = msg;
+			}
+		};
+
+		ELMG_COURSE_UI.showCloseScoPage = function () {
+			setTimeout(function () {
+				window.frames['launch_wrapper_content'].window.location.href = "/outils/parcours/close_sco_page.php?id_p=" + ELMG_COURSE_UI.current_course_id + "&id_sco=" + ELMG_COURSE_UI.current_sco_id + (ELMG_COURSE_UI.current_session_id ? '&session_id=' + ELMG_COURSE_UI.current_session_id : '');
+
+			}, 0);
+		};
+
+		$(function () {
+			// On empêche la fermeture de la plateforme par un module si la plateforme est ouverte dans une popup
+			if (window.opener != null) {
+				window.close = function () {
+				};
+			}
+
+			// Au chargement, on va sur le bon sco
+			ELMG_COURSE_UI.goToSco(159,2);
+		});
+
+	$(function() {
+		var isMobile = /Android|iPad|iPhone/.test(navigator.userAgent);
+		if (isMobile) {
+			var mt = $('meta[name=viewport]');
+			mt = mt.length ? mt : $('<meta name="viewport" />').appendTo('head');
+			mt.attr('content', "maximum-scale=1.0,user-scalable = no, width=device-width");
+		}
+	});
+
+	</script>
+
+</head>
+<frameset rows="0,*" id="elmg_global_frame" frameborder="yes" border="0" framespacing="0">
+	<frame src="" frameborder="no" name="elmg_bar_nav" noresize scrolling="no" border="0">
+	<frameset cols="0px,*,0px" id="elmg_sco_summary_frame" frameborder="yes" framespacing="0" border="0">
+		<frame src="" frameborder="no" name="summary" noresize framespacing="0" border="0"
+			   style="border-right: 1px solid #D1D3D5;">
+		<frame src="" frameborder="no" name="launch_wrapper_content"
+			   id="launch_wrapper_content" 			   noresize framespacing="0" border="0">
+		<frame id="elmg_panel" src="" frameborder="no" border="0" framespacing="0" name="elmg_panel" noresize
+			   scrolling="auto" style="border-left: 1px solid #D1D3D5;">
+	</frameset>
+
+</frameset>
+<noframes>No frameset</noframes>
+</html>
+

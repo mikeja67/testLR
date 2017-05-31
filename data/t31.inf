@@ -1,0 +1,15 @@
+[t31]
+FileName1=t31.htm
+URL1=https://peformation.elmg.net/scripts/ajax/getInstantNotification.php?timestamp=1493903002
+Total=3
+RequestHeaderFile=t31_RequestHeader.txt
+RequestBodyFile=NONE
+ResponseHeaderFile=t31_ResponseHeader.txt
+ContentType=text/html
+SnapshotXmlFile=snapshot_31.xml
+FileName2=t31_bt_disconnect.png
+URL2=https://peformation.elmg.net/habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_disconnect.png
+FileName3=t31_bt_mail.png
+URL3=https://peformation.elmg.net/habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_mail.png
+[ProtocolInfo]
+ProtocolId=QTWeb

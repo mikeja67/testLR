@@ -1,0 +1,13 @@
+[t19]
+SnapshotXmlFile=snapshot_19.xml
+FileName1=t19.html
+URL1=https://peformation.elmg.net/data/159/v17hv035.mp4.mp4
+Total=3
+RequestHeaderFile=t19_RequestHeader.txt
+RequestBodyFile=NONE
+ResponseHeaderFile=t19_ResponseHeader.txt
+ContentType=video/mp4
+FileName2=t19_success.txt
+URL2=http://detectportal.firefox.com/success.txt
+FileName3=t19_bt_close_course_roll.png
+URL3=https://peformation.elmg.net/habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_close_course_roll.png

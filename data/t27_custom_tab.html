@@ -1,0 +1,75 @@
+(function(jQuery) {
+	function sendInfos(rubric_type, rubric_id, tab_type, tab_id) {
+		var dataToSend = '';
+		
+		if (rubric_id != undefined) {
+			dataToSend = dataToSend + 'rubric_id=' + rubric_id;
+		}
+		
+		if (tab_id >= 300) {
+			dataToSend = dataToSend + '&type_tab=customTab';
+		}
+		
+		dataToSend = dataToSend + '&rubric_type=' + rubric_type + '&tab_id=' + tab_id + '&tab_type=' + tab_type;
+		
+		$.ajax({
+			async: false,
+			url: BASEDIR + 'scripts/ajax_tabs.php',
+			data: dataToSend,
+			success: function(data) {}
+		});
+	}
+
+	$(document).ready(function() {
+		$('.tab_li').bind('click', function() {
+			var rubric_id = $(this).data('rubricid');
+			var tab_id = undefined;
+			var $a = $(this).find('a');
+			var tmp_id = /tab_([0-9]+)/.exec($a.attr('id'));
+			tab_id = tmp_id[1];
+			
+			//Post click rubric + onglet
+			sendInfos('rubric_type', rubric_id, 'tab_type', tab_id);
+		});
+
+		$("div[id^='rubric_']").bind('click', function() {
+			var rub_id = /rubric_([0-9]+)/.exec($(this).attr('id'));
+			var rubric_id = rub_id[1];
+			var tab_id = undefined;
+			var $a = $('#tabs_rubric_'+rubric_id+' .tab_li').find('a');
+			var tmp_id = /tab_([0-9]+)/.exec($a.attr('id'));
+			tab_id = tmp_id[1];
+
+			//Post click rubric
+			sendInfos('rubric_type', rubric_id, 'tab_type', tab_id);
+		});
+
+		$("div[id^='tabs_rubric_'] li").css("cursor", "pointer");
+		$("div[id^='tabs_rubric_'] li").click(function(event) {
+			if(event.target.nodeName.toLowerCase() != 'a') {
+				if($('a', this).attr('target') == '_blank') {
+					window.open($('a', this).attr('href'));
+				} else {
+					window.location.href = $('a', this).attr('href');
+				}
+			}
+
+		});
+		/*
+		$('#tab_line li').bind('click', function() {
+			var header_link = $('a', this).attr('href');
+			var id_outil = $('a', this).attr('id');
+			if (typeof id_outil !== "undefined") {
+				id_outil = parseInt( id_outil.substr(4) );
+				var type_tab = ($('a', this).attr('class') == 'customTab') ? 'customTab' : 'normal';
+				$.ajax({
+					async: false,
+					url: BASEDIR + 'scripts/ajax_tabs.php',
+					data: 'id_current_tab='+id_outil+'&type_tab='+type_tab,
+					success: function(data) {}
+				});
+			}
+		});
+		*/
+	});
+})(jQuery)

@@ -1,0 +1,132 @@
+/**
+ * Gestionnaire JS des messages de la communauté
+ */
+var MessageManager = Class.extend({
+	/*
+		Initialisation
+	 */
+	init: function(params) {
+		this.items = [];
+		this.paths = {
+			'delete': params.delete_url
+		};
+	},
+	/**
+	 * Modification du trigger pour le remove par rapport à celui par défaut
+	 * @param item_id
+	 * @param trigger
+	 */
+	setRemoveTrigger: function(item_id, trigger) {
+		$(this.items[item_id].remove_trigger).off('click');
+		$(trigger).on('click', this.deleteMessageHandler.bind(this, this.items[item_id].item, this.items[item_id].modal_id));
+	},
+	/**
+	 * Ajoute un item gérer par le manager
+	 * @param params
+	 */
+	addItem: function addItem(params) {
+		this.items[params.item.id] = params;
+
+		//Bind de l'action remove
+		if(params.allow_remove) {
+			$(params.remove_trigger).on('click', this.deleteMessageHandler.bind(this, params.item, params.modal_id));
+		}
+
+		//Gestionnaire de séparateur de réponse
+		if(params.answer_separator) {
+			$('#answers-separator-'+ params.item.id + ' a').on('click', this.answerSeparatorHandler.bind(this, params.item));
+		}
+
+		//Gestionnaire de l'answer toggle
+		if(params.answer_toggle) {
+			$('#post-answers-' + params.item.id + ' > .answers-toggle-container').on('click', this.toggleAnswers.bind(this, params.item));
+			$('#post-answers-'+ params.item.id).on('advanced-text-editor-show',  this.showAdvancedTextEditor.bind(this, params.item));
+		}
+
+		//Si l'un des deux, on doit gérer les compteurs lors de l'arrivé de message
+		if(params.answer_toggle || params.answer_separator) {
+			$('#post-answers-'+ params.item.id).on('new_message', this.newMessageHandler.bind(this, params.item));
+		}
+
+	},
+	//Handler lorsqu'un text editor est affiché
+	showAdvancedTextEditor: function(message, event) {
+		event.stopPropagation();
+		if ($('#post-answers-' + message.id + ' > .answers-toggle-container > .toggle-comments-trigger a:first-child').css('display') != 'none'){
+			this.toggleAnswers(message, event);
+			var page = $('#post-answers-'+ message.id).find('.messagepublication_widget');
+			$('html, body').animate( { scrollTop: $(page).offset().top - 300 }, 750 );
+			return false;
+		}
+	},
+	//Handler lorsque on clique sur l'answer toggle
+	toggleAnswers: function(message, event) {
+		event.preventDefault();
+		$('#post-answers-' + message.id + ' > .answers-toggle-container a').toggle();
+		$('#post-answers-' + message.id + ' > .answers').toggle();
+	},
+	//Handler de l'arrivée de nouveau message
+	newMessageHandler: function(message, event) {
+		var $answers_container = $('#post-answers-'+ message.id);
+		$answers_container.find(' > .answers-toggle-container').fadeIn('500');
+		this.updateCount(message, 1);
+
+	},
+	//Mise à jour des compteur de réponses
+	updateCount: function(message, add) {
+		var $answers_container = $('#post-answers-'+ message.id);
+
+		var $count_separator = $answers_container.siblings('.answers-add-reply-container').find('.post-count span');
+		$count_separator.html(parseInt($count_separator.html()) + add);
+
+		var $count = $answers_container.find(' > .answers-toggle-container .post-count span');
+		$count.html(parseInt($count.html()) + add);
+	},
+	//Handler du séparateur de réponse
+	answerSeparatorHandler: function(message, event) {
+		event.preventDefault();
+		var $advanced_text_editor = $('#post-answers-'+ message.id).find('.advanced-text-editor');
+		FTAdvancedTextEditor.focus($advanced_text_editor.attr('id'));
+
+		$('html, body').animate({
+			scrollTop: $(window).scrollTop() + $advanced_text_editor.offset().top
+		}, 350);
+	},
+	//Handler pour la suppression de message
+	deleteMessageHandler: function(message, modal_id, event) {
+		event.preventDefault();
+		var self = this;
+
+		FTModalPopup.open(modal_id);
+		var $modal = $('#' + modal_id);
+
+		$modal.find('.validate-btn').on('click', function(e) {
+			FTModalPopup.close(modal_id);
+			$.ajax({
+				type: "DELETE",
+				url: self.paths.delete + message.id,
+				success: function() {
+					var $message = $('#message-' + message.id);
+					if($message.parents('.answers-container').siblings('.community, .message-row').length > 0) {
+						$message.parents('.answers-container').siblings('.community, .message-row').each(function() {
+							self.updateCount(self.items[$(this).data('id')].item, -1);
+						});
+					}
+					$message.trigger('message-deleted', [message.id]);
+
+					$message.remove();
+					$('#post-answers-' + message.id).remove();
+					$('#ft-modal-popup-message-' + message.id).remove();
+
+				},
+				error: function() {
+					alert('An error occured');
+				}
+			});
+		});
+
+		$modal.find('.cancel-btn').on('click', function(e) {
+			FTModalPopup.close(modal_id);
+		});
+	}
+});

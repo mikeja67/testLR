@@ -1,0 +1,15 @@
+[t17]
+FileName1=t17.htm
+URL1=https://peformation.elmg.net/outils/parcours/launch.php?id_p=159&id_sco=2&session_id=25
+Total=3
+RequestHeaderFile=t17_RequestHeader.txt
+RequestBodyFile=NONE
+ResponseHeaderFile=t17_ResponseHeader.txt
+ContentType=text/html
+SnapshotXmlFile=snapshot_17.xml
+FileName2=t17_ajaxq.jquery.html
+URL2=https://peformation.elmg.net/lib/scripts/jquery_plugin/ajaxq.jquery.js?35994f33be9ec34fc83c1ee4a14b41e5
+FileName3=t17_jquery.html
+URL3=https://peformation.elmg.net/lib/scripts/jquery.js
+[ProtocolInfo]
+ProtocolId=QTWeb

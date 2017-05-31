@@ -1,0 +1,241 @@
+/*
+	var LibSlider  = (function(my) {
+
+	})(LibSlider || {}, this);
+*/
+
+var LibSlider = function(params) {return this.init(params);};
+
+$.extend(LibSlider.prototype, {
+	/*********************************************
+					ATTRIBUTS
+	**********************************************/
+	$container:null,
+	$next_btn:null,
+	$prev_btn:null,
+	$mask:null,
+	$control_panel:null,
+	current_element:0,
+	nb_element:0,
+    max_thumbnails:null,
+	// Si disabled_btn_css_class est renseigné, ce paramètre est appliqué en tant que classe CSS aux boutons précédent et suivant désactivés (sinon les boutons sont masqués)
+	disabled_btn_css_class:false,
+
+	/*********************************************
+					METHODES
+	**********************************************/
+	init: function(params) {
+		var self = this;
+
+		if(typeof params.container == 'undefined') throw new Exception('Need a container');
+        this.max_thumbnails = params.max_thumbnails || null;
+		this.disabled_btn_css_class = params.disabled_btn_css_class || false;
+
+		this.$container = $(params.container);
+
+		//Recherche des btns de navigation
+		this.$next_btn = $('.slider-next', this.$container);
+		this.$prev_btn = $('.slider-prev', this.$container);
+		this.$mask = this.$container.find('.slider-mask');
+		this.$control_panel = this.$container.find('.slider-control-panel');
+
+		this.nb_element = this.$mask.children().length;
+
+		//TODO : s'il n'existe pas, les créer
+
+		//Bind des events
+		this.$next_btn.bind('click', function() {
+
+			//Protection au niveau du scope pour contrer les clics multiples.
+			if ($('.slider-next:animated').length) {
+				return false;
+			}
+
+			if (!self.disabled_btn_css_class || !$(this).hasClass(self.disabled_btn_css_class)) {
+				self.slideNext();
+			}
+		});
+
+		this.$prev_btn.bind('click', function() {
+
+			if ($('.slider-prev:animated').length) {
+				return false;
+			}
+
+			if (!self.disabled_btn_css_class || !$(this).hasClass(self.disabled_btn_css_class)) {
+				self.slidePrev();
+			}
+		});
+
+		this.$mask.css('position', 'relative');
+
+		if(typeof params.start != 'undefined') {
+			var start = parseInt(params.start);
+		}
+
+		$(window).resize(function() {
+			self.resizeSlider();
+		});
+
+		//On redimmenssione - a refaire sûrement
+		setTimeout(function() {
+			self.resizeSlider(start);
+			self.createNavPills();
+			self.slideTo(self.current_element, false);
+		}, 400);
+
+	},
+	slideNext: function() {
+		this.slideTo(this.current_element + 1);
+
+	},
+	slidePrev: function() {
+		this.slideTo(this.current_element - 1);
+	},
+	slideTo: function(element, animation) {
+
+		//$('.slider-element', this.$container).show();
+		var self = this;
+		this.current_element = element;
+		if(this.current_element > 0) {
+			if (this.disabled_btn_css_class) {
+				this.$prev_btn.removeClass(this.disabled_btn_css_class);
+			} else {
+				this.$prev_btn.fadeIn();
+			}
+		}
+
+		if(this.current_element < this.nb_element  - 1) {
+			if (this.disabled_btn_css_class) {
+				this.$next_btn.removeClass(this.disabled_btn_css_class);
+			} else {
+				this.$next_btn.fadeIn();
+			}
+		}
+
+		var width = $('.slider-element', this.$container).width();
+
+		if(typeof animation == 'undefined' || animation) {
+			this.$mask.animate({
+				left:-(width*this.current_element) + "px"
+			}, 1000, function() {
+				//On masque les autres après
+				var $next_elements = $('.slider-element', self.$container);
+				for(var i = self.current_element + 1 ; i < $next_elements.length ; i++) {
+					//$($next_elements[i]).hide();
+				}
+			});
+		} else {
+			this.$mask.css('left', -(width*this.current_element) + "px");
+			//On masque les autres après
+			var $next_elements = $('.slider-element', self.$container);
+			for(var i = self.current_element + 1 ; i < $next_elements.length ; i++) {
+				//$($next_elements[i]).hide();
+			}
+		}
+
+		if(this.current_element == (this.nb_element - 1)) {
+			if (this.disabled_btn_css_class) {
+				this.$next_btn.addClass(this.disabled_btn_css_class);
+			} else {
+				this.$next_btn.fadeOut();
+			}
+		}
+
+		if(this.current_element == 0) {
+			if (this.disabled_btn_css_class) {
+				this.$prev_btn.addClass(this.disabled_btn_css_class);
+			} else {
+				this.$prev_btn.fadeOut();
+			}
+		}
+		this.setCurrentElement();
+	},
+	createNavPills: function() {
+		var self = this;
+		//On supprime les potentiellement existant
+		this.$control_panel.children().remove();
+
+		for(var i = 0 ; i < this.nb_element ; i++) {
+			this.$control_panel.append('<div class="slider-control-element"><span data-slide-index="' + i + '"></span></div>');
+		}
+		$('.slider-control-element', this.$container).bind('click', function() {
+			self.slideTo($('span', this).data('slide-index'));
+		});
+
+		if(this.nb_element <= 1) this.$control_panel.hide();
+		else if(!this.$control_panel.is(':visible')) this.$control_panel.fadeIn();
+	},
+	setCurrentElement: function() {
+		//On retire l'elément actuellement selectionné
+		$('.slider-control-element.current', this.$container).removeClass('current');
+		var $elements = $('.slider-control-element', this.$container);
+		for(var i = 0 ; i < $elements.length ; i++) {
+			if(i == this.current_element) {
+				$($elements[i]).addClass('current');
+			}
+		}
+	},
+	resizeSlider: function(start) {
+		var slider_width = this.$container.width();
+
+		var thumbnail_width = $('.slider-element', this.$container).children().width();
+
+		var max_thumbnails = this.max_thumbnails || Math.floor(slider_width / thumbnail_width);
+
+		var first_mask = $($('.slider-element', this.$container)[0]);
+
+		var current_nb_thumbnails = first_mask.children().length;
+
+		var $slider_elements = $('.slider-element', this.$container);
+
+		var refresh_nav_pills = false;
+
+		if (typeof start != 'undefined') {
+			this.current_element = Math.floor(start / max_thumbnails);
+		}
+		var slide_to = this.current_element;
+
+		//Si le nombre d'éléments qu'il est possible d'afficher est inférieur à ceux actuellement afficher, on déplace ceux qui dépasse dans les masque suivants
+		if(max_thumbnails < current_nb_thumbnails) {
+			//Parcours de chaque élements
+			for(var i = 0 ; i < $slider_elements.length ; i++) {
+				//Tant qu'on dépasse, on déplace dans le masque suivant
+				while( $($slider_elements[i]).children().length > max_thumbnails) {
+					//S'il n'y a pas de masque suivant, on en crée un
+					if(i == $slider_elements.length - 1) {
+						this.$mask.append('<div class="slider-element"></div>');
+						$slider_elements = $('.slider-element', this.$container);
+						this.nb_element++;
+						refresh_nav_pills = true;
+					}
+					//Puis on déplace dedans
+					if(i < $slider_elements.length - 1) {
+						$($slider_elements[i]).children().last().prependTo( $($slider_elements[i + 1]) );
+					}
+				}
+			}
+		} else if(max_thumbnails > current_nb_thumbnails) {
+			//Parcours de chaque élements
+			for(var i = 0 ; i < $slider_elements.length ; i++) {
+				if(i < $slider_elements.length - 1) {
+					//Tant qu'on peut en remettre, on en remets dedans
+					while( $($slider_elements[i]).children().length < max_thumbnails  && $($slider_elements[i + 1]).children().length > 0) {
+						$($slider_elements[i + 1]).children().first().appendTo( $($slider_elements[i]) );
+					}
+				//si le dernier élément est vide, on le supprime
+				} else if($($slider_elements[i]).children().length == 0) {
+					$($slider_elements[i]).remove();
+					$slider_elements = $('.slider-element', this.$container);
+					this.nb_element--;
+					if(this.current_element >= this.nb_element) slide_to = this.nb_element - 1;
+					refresh_nav_pills = true;
+				}
+			}
+		}
+		if(refresh_nav_pills) {
+			this.createNavPills();
+			if(slide_to >= 0) this.slideTo(slide_to, false);
+		}
+	}
+});

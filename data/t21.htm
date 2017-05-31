@@ -1,0 +1,111 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/HTML; charset=UTF-8"  />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="Content-Language" content="fr" />
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+	<link rel="stylesheet" type="text/css" href="../../lib/css/bitestrap.css" />
+	<link rel="stylesheet" type="text/css" href="../../habillages/pre.css?1493762400" media="screen" title="Modern" />
+	<link rel="stylesheet" type="text/css" href="../../affichage/css/sco_pages.css?1493762400" media="screen" title="Modern" />
+			<link rel="stylesheet" type="text/css" href="../../habillages/1493313768-1493843130-theme_590a3a316e406/principal_1.css" media="screen" title="Modern" />
+			<link rel="stylesheet" type="text/css" href="../../habillages/1493313768-1493843130-theme_590a3a316e406/principal_2.css" media="screen" title="Modern" />
+		<script type="text/javascript" src="../../scripts/js/MM_image.js"></script>
+	<script type="text/javascript" src="../../lib/scripts/jquery.js"></script>
+	<script type="text/javascript" src="../../scripts/js/utils/bind.js"></script>
+			<script type="text/javascript" src="../../lib/scripts/Class.js"></script>
+		<script type="text/javascript" src="../../scripts/js/utils/ItemRating.js"></script>
+		<script type="text/javascript">BASEDIR = "..\/..\/";</script>
+	</head>
+<body>
+<script type="text/javascript">
+	var sco_rating_item_manager = new ItemRatingManager({
+		criterions_assocs: [{"id":"1","criterion_id":"1","item_type":"sco","default":"1","_criterion":{"id":"1","name":"Like","description":"Like","type":"like","_assocs":null,"_lazy_load":true,"img":"https:\/\/peformation.elmg.net\/outils\/parcours\/..\/..\/habillages\/1493313768-1493843130-theme_590a3a316e406\/images\/bt_like_off.png","img_roll":"https:\/\/peformation.elmg.net\/outils\/parcours\/..\/..\/habillages\/1493313768-1493843130-theme_590a3a316e406\/images\/bt_like_on.png"},"_user_ratings":null,"_lazy_load":true}],
+		user_id: 236	});
+</script>
+<script>
+    var current_course_id = next_course_id = 159;
+    var current_sco_id = 2;
+    var next_sco_id = 0;
+    $(function () {
+        if (parent.ELMG_COURSE_UI.next_course_id > 0 && parent.ELMG_COURSE_UI.next_sco_id > 0) {
+            next_course_id = parent.ELMG_COURSE_UI.next_course_id;
+            next_sco_id = parent.ELMG_COURSE_UI.next_sco_id;
+        }
+    });
+</script>
+<div class="bitestrap grid">
+    <div class="container-fluid">
+        <div id="launch_sco_page_body" class="launch-sco-page-container">
+            <div class="page-title-container" >
+    <span class="white-background small-rounded" style="background-image: url(https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_lancer.png)">&nbsp;</span>
+    <span class="page-title">Unité d&#039;apprentissage</span>
+</div>
+            <div class="row clearfix white-background">
+                <div class="launch-sco-page-row clearfix">
+                    <div class="thumbnail elmg-thumbnail sco-thumbnail">
+                        <div class="sco-img-container" style="background-image: url( https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/ua_tvlearn.png);">
+                        </div>
+                    </div>
+                    <div class="launch-sco-page-infos">
+                        <div class="launch-sco-page-title">
+                            <h3 class="sco-title">v17hv035.mp4</h3>
+                            <div class="launch-finish-text passed_color">
+                                Bravo, vous avez terminé votre formation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="close-sco-tracking sco-tracking">
+                                            <span class="img-text" style="background-image: url(https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/icon_etat_valide.png);">
+    Validé
+</span>                        <span class="img-text" style="background-image: url(https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_score.png);">
+    100%
+</span>                        <span class="img-text" style="background-image: url(https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_temps.png);">
+    0 h 00 min
+</span>                                                                <span class="rating no-select"></span>
+                                    </div>
+                <div class="launch-sco-page-row text-center">
+                                                                        <div class="rounded-btn-container" id="btn-replay">
+                                <a href="javascript:parent.ELMG_COURSE_UI.lmsNavSCO(next_course_id, current_sco_id);" class="rounded-btn">
+                                    <img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/icon_ua_rejouer.png" alt="Rejouer"/>
+                                    <br/>
+                                    <span>Rejouer</span>
+                                </a>
+                            </div>
+
+                                                                                                                                            <div class="rounded-btn-container" id="btn-quit">
+                                <a href="javascript:parent.ELMG_COURSE_UI.lmsExitSCO();" class="rounded-btn">
+                                    <img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/icon_ua_quitter.png" alt="Fermer"/>
+                                    <br/>
+                                    <span>Fermer</span>
+                                </a>
+                            </div>
+
+                                                            </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script type="text/javascript">
+        $(function () {
+            if (parent.ELMG_COURSE_UI.is_panel_open == false || parent.ELMG_COURSE_UI.opened_panel_name != 'froggylearn') {
+                parent.ELMG_COURSE_UI.showPanel(true);
+            }
+        });
+    </script>
+<script type="text/javascript">
+	sco_rating_item_manager.addItem({
+		'item': {"unique_sco_id":"1542","id_parcours":"159","id_sco":"2","titre":"v17hv035.mp4","mastery_score":"0","prerequis":"","lien":"\/v17hv035.mp4.mp4","id_parcours_lie":"0","id_sco_lie":"0","tracking":"false","mots_cles":null,"description":null,"type":"webtv","id_parent_sco":"0","nb_child_sco":"0","item_identifier":"ELS_59B8C9740F3EC7EE29328D3C40DFD423_ITEM_1955_1","completion_threshold":"0","scaled_passing_score":"0","satisfied_by_measure":"3","direct_launch":"0","weight":"1","eliminatory":"1","typical_learning_time_duration":null,"launch_data":null,"time_limit_action":null,"max_time_allowed":null,"norme":"0","advanced_options":"inherited","perso1":"","perso2":"","perso3":"","perso4":"","perso5":"","perso6":"","perso7":"","perso8":"","perso9":"","perso10":"","perso11":"","perso12":"","perso13":"","perso14":"","perso15":"","perso16":"","perso17":"","perso18":"","perso19":"","perso20":"","icon":"https:\/\/peformation.elmg.net\/outils\/parcours\/..\/..\/habillages\/1493313768-1493843130-theme_590a3a316e406\/images\/ua_tvlearn.png","default_thumbnail":true,"img":"https:\/\/peformation.elmg.net\/outils\/parcours\/..\/..\/habillages\/1493313768-1493843130-theme_590a3a316e406\/images\/ua_tvlearn.png","user_evaluations":[],"criterions":[{"id":"1","name":"Like","description":"Like","type":"like","value":0}],"lesson_status":"passed","lesson_status_text":"Valid\u00e9","score":"100%","time":"0 h 00 min","lesson_status_img":"https:\/\/peformation.elmg.net\/outils\/parcours\/..\/..\/habillages\/1493313768-1493843130-theme_590a3a316e406\/images\/icon_etat_valide.png"},
+		'item_type': "sco",
+		'container_element': '.rating'
+	});
+	<!-- Affichage du bouton clause fermé lors de l'ouverture d'une classe virutelle dans "launch_live.php" -->
+	parent.parent.frames['elmg_bar_nav'].document.querySelector('img[name="close_sco"]').style.display = 'inherit';
+</script>
+</body>
+</html>

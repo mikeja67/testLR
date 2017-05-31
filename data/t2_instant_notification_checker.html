@@ -1,0 +1,104 @@
+$(function() {
+    var notifications_ids = [];
+    var xhr;
+
+    $(window).bind('beforeunload',function() {
+        xhr.abort();
+    });
+
+    function closeNotifications() {
+        $('#instant-notification-container').remove();
+    }
+
+    function toggleNotification() {
+
+        var $width = $('#instant-notification-container').width();
+        var position = $('#instant-notification-container').css('right').replace('px', '');
+        if(position < 0 ) {
+            $('#instant-notification-container').animate({right:'0px'});
+            $('#toggle-notification img').attr('src', BASEDIR + 'habillages/standard_6/images/bt_minimize.png');
+            $('#notification-counter').hide();
+        } else {
+            //Si il y a une scrollbar on enlève la largeur de cette barre
+            if($("body").height() > $(window).height()){
+                $width = $width - ($(window).prop('innerWidth') - $("body").width());
+            }
+            //On déplace vers la droite pour ne laisser que les btn visible (+20 == padding)
+            $('#instant-notification-container').animate({right:'-'+ ($width + 20 - $('#notifications-buttons').width()) +'px'});
+            //On change l'image
+            $('#toggle-notification img').attr('src', BASEDIR + 'habillages/standard_6/images/bt_maximize.png');
+            //On ajoute le nombre de notification
+            $('#notification-counter').show();
+        }
+    }
+
+    function twitPolling(timestamp) {
+        var t;
+        xhr = $.ajax({
+            url:BASEDIR + 'scripts/ajax/getInstantNotification.php',
+            type:'GET',
+            dataType:'json',
+            data:'timestamp='+timestamp,
+            timeout:10000,
+            success:function(data){
+                clearInterval(t);
+                if(data.status != 'error') {
+                    if(data.count > 0) {
+                        var $notif;
+                        var is_new = true;
+                        //Affichage de la notification
+                        if($('#instant-notification-container').length > 0) {
+                            $notif = $('#instant-notification-container');
+                            is_new = false;
+                        } else {
+                            $notif = $('<div id="instant-notification-container">' +
+                            '<div id="notifications-buttons">' +
+                                '<p id="close-notification"><img src="' + BASEDIR + 'habillages/standard_6/images/bt_close.png" /></p>' +
+                                '<p id="toggle-notification"><img src="' + BASEDIR + 'habillages/standard_6/images/bt_minimize.png" /></p>' +
+                                '<p id="notification-counter"></p></div>' +
+                            '<div id="notification-content"></div>' +
+                            '</div>');
+                            $('body').prepend($notif);
+                            $('#close-notification').click(closeNotifications);
+                            $('#toggle-notification').click(toggleNotification);
+                        }
+                        //Création du contenu
+                        var html = '';
+
+                        for(var i = 0 ; i < data.items.length ; i++) {
+                            //On regarde si on est sur une page où on doit afficher la notification ou non et si elle a déjà été affichée
+                            var display = (window.location.href.indexOf('live') == -1 && data.items[i].type == 'live') || data.items[i].type == 'message';
+                            if(display && $.inArray(data.items[i].item_id, notifications_ids) == -1) {
+                                notifications_ids.push(data.items[i].item_id);
+                                html += '<table data-item-id="' + data.items[i].item_id + '" class="instant-notification"><tr><td class="user-img"><img src="' + data.items[i].img + '"/></td><td><p>' + data.items[i].from +'</p><p>' + data.items[i].text + '</p>';
+                                html += '<p style="text-align:right;"><a href="' + data.items[i].link + '">' + data.items[i].join_text + '</a></p>';
+                                html += '</td></tr></table>';
+                            }
+                        }
+                        $notif.find('#notification-content').append(html);
+                        $notif.find('#notification-counter').text($notif.find('table').length);
+
+                        //Affichage
+                        if(is_new && $notif.find('table').length > 0) {
+                            toggleNotification();
+                        }
+                    }
+                    //On relance le timer
+                    t= setTimeout(function(){
+                        twitPolling(data.timestamp)
+                    }, 10000);
+                }
+            },
+            error:function(data, textStatus) {
+                clearInterval(t);
+                if(textStatus != 'abort' && textStatus != 'timeout') {
+                    t= setTimeout(function(){
+                        twitPolling(timestamp)
+                    }, 15000);
+                }
+
+            }
+        });
+    }
+    twitPolling(Math.floor(new Date().getTime() / 1000));
+});

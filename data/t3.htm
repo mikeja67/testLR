@@ -1,0 +1,64 @@
+<div class="bitestrap grid">
+	<div class="container courses-container" data-session-id="25">
+		<div class="row courses" id="courses"
+			 data-courses-count="1"
+			 style="clear: left;"
+		>
+		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 completed acourse" data-id="159" data-can-launch="1"  id="course_159">
+	<div>
+		<div class="thumbnail elmg-thumbnail">
+			<div class="course-mask"></div>
+
+			<div class="course-img-container course-img-container-big">
+											<div class="infos_panel">
+					<div>
+						<p>Temps pass&eacute;</p>
+						<span class="rounded"><img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_temps.png"/></span>
+						<p class="course-time">0 min</p>
+					</div>
+											<div>
+							<p>Score</p>
+							<span class="rounded"><img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_score.png"/></span>
+							<p class="course-score">100%</p>
+						</div>
+					
+				</div>
+								<div class="elmg-center img-responsive" style="background-image: url(https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/vignette_ua_defaut.png);width: 100%; height: 100%;"/>
+						</div>
+			<div class="elmg-status">
+				<span>
+										<img class="course-ls" alt="passed" src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/icon_etat_valide.png"/>
+				</span>
+			</div>
+							<div class="elmg-course-title">
+					<a>TEST VIDEO</a>				</div>
+						<div class="elmg-course-state-time">
+				<div class="col-xs-6 elmg-duration">
+									</div>
+				<div class="col-xs-6">
+														</div>
+			</div>
+		</div>
+	</div>
+</div>
+		</div>
+		<div id="course_loading">
+			<img src="../../habillages/standard_5/images/loading1.gif"/>
+		</div>
+						
+
+	</div>
+</div>
+<script>
+	$(function() {
+		$('.courses-container:visible .courses').data('courses-ls-count', {"not_attempted":0,"incomplete":0,"completed":1});
+
+		var course_open = 0;
+		// Ouvre le slider du parcours actuel (paramètre 'open_course')
+		if(course_open > 0) {
+			$('.acourse').each(function() {
+				if($(this).data('id') == course_open && $(this).data('autorun') == undefined) $(this).click();
+			})
+		}
+	});
+</script>

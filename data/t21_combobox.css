@@ -1,0 +1,75 @@
+.ui-combobox {
+	position: relative;
+	display: inline-block;
+	margin-right: 20px;
+}
+.ui-combobox .ui-combobox-toggle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin-left: -1px;
+	padding: 0;
+	/* support: IE7 */
+
+	*height: 1.7em;
+	*top: 0.1em;
+}
+.ui-combobox .ui-combobox-input {
+	margin: 0;
+	padding: 0.2em;
+}
+.ui-combobox .ui-autocomplete.ui-widget {
+	font-size: 1em;
+}
+.ui-combobox .ui-state-default,
+.ui-combobox .ui-widget-content .ui-state-default,
+.ui-combobox .ui-widget-header .ui-state-default {
+	background: white;
+}
+.ui-combobox .ui-autocomplete {
+	max-height: 200px;
+	overflow-y: auto;
+	/* prevent horizontal scrollbar */
+
+	overflow-x: hidden;
+	margin-right: 20px;
+	width: 100% !important;
+	position: absolute;
+}
+
+a.ui-button.disabled {
+	pointer-event: none;
+	cursor: default;
+}
+a.ui-button.disabled:hover, a.ui-button.disabled:active {
+	border: 1px solid #D3D3D3;
+}
+
+.ui-combobox .ui-state-default.disabled,
+.ui-combobox .ui-widget-content .ui-state-default.disabled,
+.ui-combobox .ui-widget-header .ui-state-default.disabled {
+	color: #8c8c8c;
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+	height: 200px;
+}
+
+#profil_box .ui-combobox a.ui-state-default,
+#profil_box .ui-combobox .ui-widget-content a.ui-state-default,
+#profil_box .ui-combobox .ui-widget-header a.ui-state-default {
+	background: white;
+	height: auto;
+	width: 2.2em;
+}
+#profil_box .ui-combobox .ui-menu-item a {
+	background: none;
+	padding: 0;
+	width: auto;
+}
+
+#profil_box .ui-combobox .ui-menu-item a.ui-state-focus {
+	background: url(smoothness/images/ui-bg_glass_75_dadada_1x400.png) repeat-x scroll 50% 50% #DADADA;;
+}

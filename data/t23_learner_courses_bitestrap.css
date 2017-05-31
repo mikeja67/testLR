@@ -1,0 +1,467 @@
+.bitestrap .thumbnail {
+	margin-bottom:30px;
+}
+
+
+
+.elmg-thumbnail {
+	max-height: 205px;
+	position: relative;
+}
+
+img.elmg-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 117px;
+    max-width: 253px;
+}
+
+
+.courses-container .courses .elmg-course-state-time {
+	clear:left;
+	height: 20px;
+}
+
+.courses-container .elmg-center {
+	background-size: cover;
+}
+
+.courses .elmg-course-state-time div:last-child {
+	text-align: right;
+}
+
+.courses-container .courses .elmg-course-state-time > div {
+	display:inline-block;
+	vertical-align:middle;
+	height:100%;
+	line-height:20px;
+	padding:0;
+}
+
+.elmg-status {
+	float:left;
+}
+
+.elmg-course-title{
+	margin-top: 3px;
+	height:45px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 10px;
+}
+
+.elmg-course-comment{
+	text-align:right;
+	margin-right:0;
+}
+
+.elmg-course-comment a{
+	background-size: cover;
+	display:inline-block;
+	min-height: 20px;
+	min-width: 27px;
+}
+
+.elmg-sco-title {
+	padding-top:2px;
+	font-size: 1.2em;
+	text-align: center;
+}
+
+tr.elmg-sco td {
+	vertical-align: middle !important;
+}
+
+tr.elmg-sco td.center {
+	text-align: center;
+}
+
+h1.search-title {
+	color: #666 !important;
+}
+
+.search-logo{
+	float: left;
+	margin: 8px 15px 0 15px;
+	background-position: -2px 3px;
+}
+
+.media-body {
+	display: table;
+	height: 30px;
+}
+
+.elmg-ua-link {
+	display: table-cell;
+	vertical-align: middle !important;
+}
+
+.elmg-nav-pills > li > a {
+	padding: 4px 12px !important;
+	margin-top: 11px;
+}
+
+#course_loading {
+	clear:both;
+	text-align: center;
+	display:none;
+}
+
+.acourse {
+	cursor:pointer;
+}
+
+.infos_panel {
+	display:none;
+	position: absolute;
+	top:0;
+	left:0;
+	margin:auto;
+	width:100%;
+	height:100%;
+	background: rgba(0, 0, 0, 0.6);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#80000000', endColorstr='#80000000'); /* IE */
+	text-align:center;
+	padding-top:15px;
+}
+
+.infos_panel > div, .scos-infos-panel div {
+	float: left;
+	width:50%;
+}
+
+.infos_panel > div:nth-of-type(1) {
+	padding-left:40px;
+}
+
+.infos_panel > div:nth-of-type(2) {
+	padding-right:40px;
+}
+
+#scos {
+	position:relative;
+}
+
+#scos {
+	display:none;
+	clear:both;
+	width:100%;
+}
+
+#scos-course-arrow {
+  width: 50px;
+   height: 15px;
+   position: absolute;
+   overflow: hidden;
+   top:-15px;
+}
+
+#scos-course-arrow:after {
+   content: "";
+   position: absolute;
+   width: 30px;
+   height: 30px;
+   background: #CCC;
+   transform: rotate(45deg);
+   -ms-transform: rotate(45deg);
+   -webkit-transform: rotate(45deg);
+   top: 7px;
+}
+
+#scos-container {
+	border-radius:5px;
+	margin-bottom: 30px;
+	background-color:#FFF;
+}
+
+.bitestrap h3.scos-table-course-title {
+	margin:0px;
+}
+
+.bitestrap .table.scos-table {
+	margin-bottom:0px;
+}
+
+#scos .col-xs-12 {
+	float: none;
+}
+
+#global-scos-container .col-xs-12 {
+	float:left;
+}
+
+.rounded {
+	display:inline-block;
+	vertical-align: middle;
+	width:45px;
+	height:45px;
+	background:rgba(255,255,255,1);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#FFFFFFFF', endColorstr='#FFFFFFFF'); /* IE */
+	border-radius:50%;
+	padding-top:6px;
+	margin-bottom:10px;
+}
+.rounded.small-rounded {
+	width:40px;
+	height:40px;
+}
+
+.thumbnail.elmg-thumbnail.sco-thumbnail {
+	margin-bottom:0px;
+}
+
+.elmg-thumbnail.sco-thumbnail {
+	height: 150px;
+	border:none;
+	background-color: transparent;
+
+}
+
+.elmg-sco-col {
+	/*width:190px;*/
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	display:block;
+	float:left;
+	white-space: nowrap;
+}
+
+.indent-spacer {
+	float: left;
+	min-height: 10px;
+	min-width: 30px;
+	display:inline-block;
+}
+
+.chapter-title-desc:nth-of-type(1) {
+	border-top-left-radius: 3px;
+}
+
+.chapter-title-desc {
+	max-width:242px;
+	height: 200px;
+	margin-bottom: 5px;
+}
+
+
+.empty-chapter {
+	max-width: none !important;
+	height: auto !important;
+	padding-top: 2px;
+	padding-bottom: 5px;
+}
+
+.elmg-sco-state-time {
+	background-color:rgba(0,0,0,0.75);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#80000000', endColorstr='#80000000'); /* IE */
+	width: 100%;
+	margin: auto;
+	position: absolute;
+	bottom:0%;
+	height:30px;
+}
+
+.elmg-sco-status span {
+	display:inline-block;
+	height: 100%;
+	padding-top:2px;
+	vertical-align:middle;
+}
+
+span.elmg-sco-status-left {
+	text-align:center;
+	width:21%;
+	padding-top:0px;
+	overflow:hidden;
+	text-align:left;
+	margin-top:3px;
+}
+
+span.elmg-sco-status-center{
+	width:51%;
+}
+
+span.elmg-sco-status-right{
+	width:21%;
+	text-align:right;
+}
+
+.elmg-sco-title {
+	white-space: normal;
+}
+
+
+.maintable {
+	background-color: #EFEFEF;
+}
+
+.course-mask {
+	position: absolute;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:100%;
+	background-color:rgba(255,255,255,0.5);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#80FFFFFF', endColorstr='#80FFFFFF'); /* IE */
+	z-index:999;
+	display:none;
+}
+
+.scos-infos-panel {
+	display:none;
+	position: absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background: rgba(0, 0, 0, 0.6);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#80000000', endColorstr='#80000000'); /* IE */
+	text-align:center;
+	padding-top:15px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+.scos-infos-panel.empty {
+	background: none;
+	filter: none; /* IE */
+}
+
+.sco-img-container{
+	background-size:cover;
+	position:relative;
+	width: 155px;
+	height: 155px;
+}
+
+.elmg-sco-state{
+	position:absolute;
+	top:0;
+	right:0;
+}
+
+.locked-sco {
+	position: absolute;
+	top:0px;
+	left:0px;
+	background-color:rgba(255,255,255, 0.60);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#80FFFFFF', endColorstr='#80FFFFFF'); /* IE */
+	width:100%;
+	height:100%;
+	text-align: center;
+}
+
+.locked-sco span {
+	height:100%;
+	vertical-align: middle;
+	display:inline-block;
+}
+
+.course-img-container-big {
+	height: 120px;
+	position: relative;
+}
+
+.maintable, #submain-table {
+	background-color:transparent!important;
+	border-radius:5px;
+}
+
+.course-img-container .infos_panel p {
+	white-space:nowrap;
+}
+
+.chapter-title-desc h3 {
+	padding-top:1px;
+	font-size:20px;
+	word-wrap: break-word;
+}
+
+.sco-alert, .course-alert, .community-alert{
+	margin-top:20px;
+	margin-bottom:20px;
+	min-height: 100px;
+	background-color: #f5f5f5;
+	padding: 10px;
+}
+
+.alert-img{
+	float:left;
+	margin-right: 20px;
+}
+
+.alert-msg{
+	margin-top : 10px;
+	display: inline-block;
+}
+
+.alert-title{
+	font-size: 20px;
+	color: #3C4146;
+}
+
+.alert-subtitle{
+	font-size: 16px;
+	color: #8C9196;
+}
+.elmg-course-state-time{
+	height: 20px;
+}
+
+.elmg-course-state-time div:last-child {
+	text-align: right;
+	padding: 0;
+}
+
+@media only screen
+and (max-width : 767px) {
+	/* Onglet parcours */
+	#tab-container ul.nav-tabs {
+		padding-left:15px;
+		padding-right:15px;
+	}
+	#state_filter_container .navbar-text {
+		margin-left:0;
+		margin-right: 2px;
+	}
+	#state_filter_container {
+		margin-left:-15px;
+		margin-right:-15px;
+	}
+	.elmg-nav-pills > li > a {
+	    padding: 4px 4px !important;
+	}
+
+	/* Vue slider des parcours */
+	.chapter-title-desc {
+		height:auto;
+		max-width:100%;
+	}
+	.chapter-title-desc:nth-of-type(1) {
+		border-top-right-radius:3px;
+	}
+
+	/* Vue liste des parcours */
+	.sco-list {
+		padding: 2px;
+	}
+
+	.scos-table > thead > tr > th,
+	.scos-table > tbody > tr > th,
+	.scos-table > tfoot > tr > th,
+	.scos-table > thead > tr > td,
+	.scos-table > tbody > tr > td,
+	.scos-table > tfoot > tr > td {
+		padding:1px !important;
+	}
+
+	.scos-table .elmg-ua-link {
+		font-size:0.8em;
+	}
+
+	.scos-table .media-body {
+		display:block;
+	}
+
+}

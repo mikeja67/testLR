@@ -1,0 +1,612 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"
+		>
+
+	<head>
+	<title>Parcours</title>
+
+	<meta http-equiv="Content-Type" content="text/HTML; charset=UTF-8" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="Content-Language" content="fr" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+				
+	
+<script type="text/javascript" src="../../web/assets-v1493313768-js/edoceo-frontend.js"></script>
+<!--[if (IE 8)|(IE 9)]>
+	<script type="text/javascript" src="../../web/assets-v1493313768-js/flexibility.js"></script>
+<![endif]-->
+
+
+<script type="text/javascript" src="../../web/assets-v1493313768-js/edoceo-elmg.js"></script>
+
+
+<script src="../../lib/scripts/Class.js"></script>
+<script src="../../scripts/js/utils/ItemRating.js"></script>
+<script src="../../scripts/js/message/MessageManager.js"></script>
+
+				<link rel="stylesheet" type="text/css" href="../../lib/scripts/jquery_ui/css/smoothness/jqueryui.min.css" />
+			<link rel="stylesheet" type="text/css" href="../../lib/scripts/jquery_ui/css/combobox.css" />
+			<link rel="stylesheet" type="text/css" href="../../habillages/1493313768-1493843130-theme_590a3a316e406/principal_1.css" />
+			<link rel="stylesheet" type="text/css" href="../../habillages/1493313768-1493843130-theme_590a3a316e406/principal_2.css" />
+			<link rel="stylesheet" type="text/css" href="../../affichage/css/learner_courses_bitestrap.css" />
+			<link rel="stylesheet" type="text/css" href="../../affichage/css/session_separator.css" />
+	
+	<link rel="shortcut icon" href="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/favicon.ico" />
+
+	<script type="text/javascript">var BASEDIR = '../../';</script>
+			<script type="text/javascript" src="../../scripts/js/utils/bind.js"
+								></script>
+			<script type="text/javascript" src="../../scripts/js/MM_image.js"
+								></script>
+			<script type="text/javascript" src="../../scripts/js/custom_tab.js?1493320272"
+								></script>
+			<script type="text/javascript" src="../../lib/scripts/slider.js?1493902990"
+								></script>
+			<script type="text/javascript" src="../../scripts/js/utils/AjaxPager.js"
+								></script>
+			<script type="text/javascript" src="../../scripts/js/courses/CoursesDisplayManager.js?1493762400"
+								></script>
+			<script type="text/javascript" src="../../scripts/js/utils/ItemRating.js"
+								></script>
+			<script type="text/javascript" src="../../scripts/js/instant_notification_checker.js"
+								></script>
+	
+			<script type="text/javascript">$(document).ready(function() {
+		$( "select[rel=autocomplete]" ).combobox();
+	});
+$(function() {      $("select[id*=perso]").each(function() {       $(this).css("width","auto");       var width = $(this).width();       if(width <150) width = 150;       $(this).css("width",width);      });     });
+</script>
+	</head>
+
+<body bgcolor="#FFFFFF" class="account_type_4 module_2">
+
+			
+	
+
+	
+
+
+	
+
+
+	
+
+
+	
+
+
+
+
+	
+<div class="top-header">
+	<div class="top-header-content">
+					<div class="left-container">
+														<img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/theme_image_19_58e74a84d2bff.png"/>
+												</div>
+			<div class="right-container">
+				<div class="info-box">
+					<div class="name">Eric ROUSSEAU</div>
+										<div class="menus">
+													<div class="menu">
+																<form method="post"
+									  >
+																																											<input type="hidden" name="csrf" value="1804b342f007c2209fc4efbc9d7a29e9a434f4a0"/>
+			
+																		<div class="combobox">
+	<select name="lang"
+										onchange="javascript:this.form.submit();"
+												class="ft_590b268eab0c64_04422362"
+	>
+							<option value="uk"
+										title="EN"
+								>EN</option>
+					<option value="fr"
+											selected="selected"
+										title="FR"
+								>FR</option>
+			</select>
+			<script type="text/javascript">
+			$(function () {
+				var $el = $("select[class~=ft_590b268eab0c64_04422362][name=lang]");
+				var options = {
+					width: 'resolve'
+				};
+				options.theme = 'edoceo-header';
+				options.minimumResultsForSearch = Infinity;				options.templateResult = function (state) {
+					return $('<span>' + state.text + '</span>');
+				};
+																								options.language = "fr";
+				
+				$el.css("width", "100%");
+				$el.select2(options);
+				$el.on("select2:open", function (e) {
+					$(".select2-dropdown.select2-dropdown--below").css("min-width", "150px");
+				});
+			});
+		</script>
+	</div>
+
+																	</form>
+								
+							</div>
+													<div class="menu">
+																<form method="post"
+									  >
+																																									
+																		<div class="combobox">
+	<select name="choix_session"
+										onchange="javascript:this.form.submit();"
+												class="ft_590b268eab3934_85556476"
+	>
+							<option value="0"
+											selected="selected"
+										title="Session par défaut"
+								>Session par défaut</option>
+					<option value="25"
+										title="AOSI TEST CHARGE 2"
+								>AOSI TEST CHARGE 2</option>
+			</select>
+			<script type="text/javascript">
+			$(function () {
+				var $el = $("select[class~=ft_590b268eab3934_85556476][name=choix_session]");
+				var options = {
+					width: 'resolve'
+				};
+				options.theme = 'edoceo-header-large';
+								options.templateResult = function (state) {
+					return $('<span>' + state.text + '</span>');
+				};
+																								options.language = "fr";
+				
+				$el.css("width", "100%");
+				$el.select2(options);
+				$el.on("select2:open", function (e) {
+					$(".select2-dropdown.select2-dropdown--below").css("min-width", "150px");
+				});
+			});
+		</script>
+	</div>
+
+																	</form>
+								
+							</div>
+						
+					</div>
+				</div>
+								<div class="top-header-avatar-actions">
+					<div id="top-header-avatar" class="avatar ">
+						<img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_apprenant_header.png"/>					</div>
+					<div id="top-header-actions"
+						 class="actions"><div class="actions-list bitestrap list-group image"
+     id="top-header-actions-list" style="display:none;" >
+                                                                                        <a href="../../outils/courriel/"
+               class="list-group-item
+                                                                                ">
+                                    <span class="img-text" style="background-image: url(https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_mail.png);">
+    Mail
+</span>                                            </a>
+                                                                                                <a href="../../shared/global_search.php"
+               class="list-group-item
+                                                             recherche                     ">
+                                    <span class="img-text" style="background-image: url(https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_recherche.png);">
+    Recherche
+</span>                                            </a>
+                                                                                                <a href="../../logout.php"
+               class="list-group-item
+                                                                                ">
+                                    <span class="img-text" style="background-image: url(https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_disconnect.png);">
+    Se déconnecter
+</span>                                            </a>
+                        <script type="text/javascript">
+            $(function () {
+                $(window).on("click", function (e) {
+                    if (!$(e.target).hasClass("action-list-caller")) {
+                        $("#top-header-actions-list").hide();
+                        $(".btn-dropdown .dropdown.opened, .breadcrumb .active.opened").removeClass("opened");
+                        $(".action-list-caller.opened").removeClass("opened");
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>
+				</div>
+			</div>
+				</div>
+</div>
+<script type="text/javascript">
+	$(function () {
+		var actionListButton = $('#top-header-avatar');
+		var actionList = $('#top-header-actions-list');
+		actionListButton.addClass('action-list-caller');
+		$('#top-header-avatar > img').addClass('action-list-caller');
+
+		actionListButton.on('click', function () {
+			if (actionList.is(":hidden")) {
+				$("[id$='-actions-list']").hide();
+				$(".btn-dropdown .dropdown.opened, .breadcrumb .active.opened").removeClass("opened");
+				actionListButton.addClass("opened");
+			} else {
+				actionListButton.removeClass("opened");
+			}
+			actionList.toggle();
+		});
+	});
+</script>
+
+
+	<div class="main-menu bitestrap">
+	<div class="main-menu-content">
+		<div class="row">
+			<div class="hidden-xs col-sm-2 col-md-2 col-lg-2 left-container"></div>
+			<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 middle-container">
+				<div class="middle-container-content">
+					<div>
+						<ul class="nav nav-tabs">
+															<li class="3 active">
+									<a href="../../outils/parcours/"
+									   											target=""									><img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/menu-training.png"/>
+										<div class="title">
+											<span>Formations</span>
+										</div>
+									</a>
+								</li>
+															<li class="4">
+									<a href="../../outils/resultats/"
+									   											target=""									><img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/menu-results.png"/>
+										<div class="title">
+											<span>Résultats</span>
+										</div>
+									</a>
+								</li>
+													</ul>
+					</div>
+				</div>
+			</div>
+			<div class="hidden-xs col-sm-2 col-md-2 col-lg-2 right-container">
+										
+							</div>
+		</div>
+	</div>
+</div>
+			<div class="main-menu-sub bitestrap 3">
+    <div class="main-menu-sub-content">
+        <div>
+            <ul class="nav nav-tabs">
+                                    <li class="active">
+                        <a href="../../outils/parcours/" title="Parcours">Parcours</a>
+                    </li>
+                                    <li>
+                        <a href="../../outils/live/" title="Classe virtuelle">Classe virtuelle</a>
+                    </li>
+                            </ul>
+        </div>
+    </div>
+</div>		
+	
+<table class="maintable maintable-fixed" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr class="tr_body_content" id="elmg_content_body">
+		<td width="100%" valign="top" bgcolor="#FFFFFF">
+		<div align="center">
+			<table width="98%" border="0" cellspacing="0" cellpadding="0" id="submain-table" class="">
+				<tr>
+					<td align="left"><div class="bitestrap grid">
+		<div id="state_filter_container">
+		<p class="navbar-text">Voir :</p>
+		<ul class="nav nav-pills elmg-nav-pills state_list">
+			<li id="li_all" class="active"><a href="#">Tous</a></li>
+			<li id="li_not_attempted" ><a href="#">Pas commenc&eacute;s</a></li>
+			<li id="li_incomplete" ><a href="#">En cours</a></li>
+			<li id="li_completed" ><a href="#">Termin&eacute;s</a></li>
+						<li id="li_most_popular" ><a href="#">Les + populaires</a></li>
+					</ul>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+
+<div class="bitestrap grid">
+	<div class="container">
+		<div class="row sessions-row" style="display: block;">
+			
+<div
+	id="session-25"
+	class="asession col-lg-12 AOSI_TEST_CHARGE_2"
+	data-session-id="25"
+	data-course-page="1"
+	data-course-count="1"
+	>
+	<div class="session-left pull-left full-height">
+		<div class="session-title">
+			<div class="valign_middle">AOSI TEST CHARGE 2</div>
+		</div>
+				<div class="session-desc">
+			<div class="valign_middle"></div>
+		</div>
+			<div class="session-track-count">
+						<div class="session-tracking-info table-display">
+								<span class="status-infos">
+					<span>
+												<img class="course-ls" alt="passed" src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/icon_etat_valide.png"/>
+					</span>
+				</span>
+								<div class="table-cell valign_middle">
+										<span>
+						<img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_temps_blanc.png" alt="Temps pass&eacute;" title="Temps pass&eacute;"/>
+						0 h 01 min 50 s					</span>
+					<span class="score-infos">
+						<img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_score_blanc.png" alt="Score" title="Score"/>
+						100					</span>
+										<span class="end-infos">
+												<img class="icon_40_30" src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/bt_planning_blanc.png" alt="Score" title="End date"/>
+						07/07/2017											</span>
+				</div>
+			</div>
+						<div class="session-count-info table-display">
+					<span>
+						1&nbsp;parcours					</span>
+			</div>
+		</div>
+		</div>
+	<div class="session-thumbnail pull-right full-height">
+		<img src="https://peformation.elmg.net/outils/parcours/../../habillages/1493313768-1493843130-theme_590a3a316e406/images/vignette_session.png" alt="AOSI TEST CHARGE 2"/>
+	</div>
+</div>
+
+<div id="session-25-courses" class="ajax-courses col-lg-12" style="display:none;"></div>
+<div align="center" style="clear: both;"></div>		</div>
+	</div>
+</div>
+<div id="scos">
+	<div id="scos-course-arrow"></div>
+	<div id="scos-container" class="scos-slider-display"></div>
+</div>
+<script type="text/javascript">
+	$(function() {
+		//Evite la disparition de la liste des parcours lorsque l'on clique sur les icones de planification et d'options
+		$('.session-actions a').click(function(event){
+			event.stopPropagation();
+		});
+	});
+</script>
+<div id="most-pouplar-ajax-courses" class="most-popular-courses" style="display: none;">
+</div>
+<script>
+	$(function() {
+
+	if($('#header').width() < 1170) {
+		$('.courses-container').css('max-width', $('#header').width() + 'px');
+	} else {
+		$('.courses-container').css('max-width', '1170px');
+	}
+
+	$(window).resize(function() {
+		if($('#header').width() < 1170) {
+			$('.courses-container').css('max-width', $('#header').width() + 'px');
+		} else {
+			$('.courses-container').css('max-width', '1170px');
+		}
+	});
+
+	/**
+	 * Affichage des uas d'un parcours
+	 */
+	$('.ajax-courses').on('click', '.courses-container .courses .acourse', function() {
+		// Prérequis
+		if ($(this).data('can-launch') != '1') {
+			return;
+		}
+
+        if ($(this).data('autorun')) {
+            window.location.href = $(this).data('autorun');
+            return;
+        }
+
+		$.ajax({
+			method: 'GET',
+			url: BASEDIR + 'scripts/ajax/setOpenElement.php?action=set&course_id=' + $(this).data('id'),
+		});
+
+		$('.course-selected').removeClass('course-selected');
+
+		var $sco_panel = $('#scos');
+
+		var prev_element_id = $('#scos').prev().data('id');
+
+		$(this).addClass('course-selected');
+
+		//On enlève le masque sur celui qu'on vient de cliquer, et on l'affiche sur les autres
+		$('.course-mask', this).hide();
+		$('.acourse:not(.course-selected) .course-mask').fadeIn();
+
+		$('.infos_panel').each(function() {
+			if($(this).parents('.course-selected').length == 0) {
+				$(this).hide();
+			}
+		});
+
+		//Position de l'éléments cliqué
+		var current_y = $(this).offset().top;
+
+		//Elements qui suivent
+		var next_elements = $(this).nextAll('.acourse');
+
+		//Element après lequel on doit placer la div qui contient les scos
+		var after_element = $(this);
+
+		var found = false;
+
+		for(var i = 0 ; i < next_elements.length && !found; i++) {
+			if($(next_elements[i]).offset().top > current_y) {
+				if(i > 0) after_element = $(next_elements[i - 1]);
+				found = true;
+			}
+		}
+
+		if(!found && next_elements.length > 0) {
+			after_element = $(next_elements[next_elements.length - 1]);
+		}
+
+		var id = $(this).data('id');
+		var $current_course = $(this);
+		var session_id = $current_course.parents('.courses-container').data('session-id');
+        if(!$sco_panel.is(':visible')) {
+            $sco_panel.insertAfter(after_element);
+        } else if(prev_element_id != after_element.data('id')){
+            $sco_panel.hide().insertAfter(after_element);
+        }
+
+
+        $.ajax({
+			url:'learner_scos.ajax.php?id=' + id + (typeof session_id !== 'undefined' ? '&session_id=' + session_id : ''),
+            context: this,
+			statusCode: {
+				// En cas d'expiration de la session
+				404: function() {
+					window.location.href = "../../";
+				}
+			},
+			success: (function(s) {
+                return function(data) {
+                    $('html, body').animate({
+                        scrollTop: $("#" + s.id).offset().top
+                    }, 750);
+
+                    $('#scos-container').html(data);
+
+                    $sco_panel.fadeIn(300, function() {
+                        var arrow_left_pos = $current_course.offset().left - $sco_panel.offset().left + ($current_course.width() / 2);
+                        if($sco_panel.is(':visible')) {
+                            //Positionnement de la flèche pour indiquer quel parcours est sélectionné
+                            $('#scos-course-arrow').animate(
+                                {left:arrow_left_pos},
+                                200
+                            );
+                        }
+
+                    });
+                }
+            })(this)
+		});
+	});
+
+	/**
+	 * Affichage des infos de score / temps
+  	 **/
+	$('.ajax-courses').on('mouseenter', '.courses-container .courses .acourse .thumbnail', function() {
+		var current_course = $(this);
+		current_course.addClass("hasFocus");
+		setTimeout(function() {
+			if(current_course.hasClass('hasFocus')) {
+				$('.course-mask', current_course).hide();
+				$('.infos_panel', current_course).fadeIn();
+			}
+		}, 250);
+	});
+
+	$('.ajax-courses').on('mouseenter', '.courses-container .courses .acourse', function() {
+		// Prérequis
+		if ($(this).data('can-launch') == '0') {
+			$(this).css("cursor", "default");
+			return;
+		}
+	});
+
+	/**
+	 * Masquage des infos de score / temps
+	 **/
+	$('.ajax-courses').on('mouseleave', '.courses-container .courses .acourse .thumbnail', function() {
+		var current_course = $(this);
+		current_course.removeClass("hasFocus");
+
+		if (!current_course.parent().parent().hasClass('course-selected')) {
+			if($('.course-selected').length > 0) {
+				$('.course-mask', current_course).fadeIn();
+			}
+			$('.infos_panel', current_course).fadeOut();
+		}
+	});
+});
+</script>
+<script type="text/javascript">
+	var sco_rating_item_manager = null;
+	var display_session_separator = true;
+	var open_session_id = 25;
+
+		sco_rating_item_manager = new ItemRatingManager({
+		criterions_assocs: [{"id":"1","criterion_id":"1","item_type":"sco","default":"1","_criterion":{"id":"1","name":"Like","description":"Like","type":"like","_assocs":null,"_lazy_load":true,"img":"https:\/\/peformation.elmg.net\/outils\/parcours\/..\/..\/habillages\/1493313768-1493843130-theme_590a3a316e406\/images\/bt_like_off.png","img_roll":"https:\/\/peformation.elmg.net\/outils\/parcours\/..\/..\/habillages\/1493313768-1493843130-theme_590a3a316e406\/images\/bt_like_on.png"},"_user_ratings":null,"_lazy_load":true}],
+		user_id: 236	});
+	
+	var course_display_manager = new CoursesDisplayManager({
+		'session_delimiter' : display_session_separator,
+		'open_session_id' : open_session_id,
+		'query' : '?open_course=159',
+		'forced_search': false,
+		'rating_item_manager': sco_rating_item_manager
+	});
+
+	$(function() {
+		course_display_manager.loadCourses();
+	});
+
+	function gotoCourse(course_id, link) {
+		$.ajax({
+			async: false,
+			method: 'GET',
+			url: BASEDIR + 'scripts/ajax/setOpenElement.php?action=set&course_id=' + course_id,
+			success: function(data) {
+				$(location).attr('href',link);
+			}
+		});
+	}
+</script>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<div id="footer">&copy; Talentsoft LMS 7.0.2 17f7147 | Page g&eacute;n&eacute;r&eacute;e en : 0.119 s | Requ&ecirc;tes SQL en : 0.007 s</div>
+		<div id="sticky-footer"></div>
+		<script>
+			// Window load event used just in case window height is dependant upon images
+			$(window).bind("load", function () {
+
+				var footerHeight = 0,
+						footerTop = 0,
+						$footer = $("#sticky-footer");
+
+				positionFooter();
+
+				function positionFooter() {
+
+					footerHeight = $footer.height();
+					footerTop = ($(window).scrollTop() + $(window).height() - footerHeight) + "px";
+
+					if (($(document.body).height() + footerHeight) < $(window).height()) {
+						$footer.css({
+							position: "absolute",
+							top: footerTop
+						});
+
+					} else {
+						$footer.css({
+							position: "static"
+						});
+					}
+					$footer.show();
+				}
+
+				$(window)
+						.scroll(positionFooter)
+						.resize(positionFooter);
+
+			});
+		</script>
+			</body>
+
+</html>

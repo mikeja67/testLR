@@ -1,0 +1,15 @@
+[t22]
+FileName1=t22.htm
+URL1=https://peformation.elmg.net/outils/parcours/sco_panel.php?id_p=159&id_sco=2&session_id=25
+Total=3
+RequestHeaderFile=t22_RequestHeader.txt
+RequestBodyFile=NONE
+ResponseHeaderFile=t22_ResponseHeader.txt
+ContentType=text/html
+SnapshotXmlFile=snapshot_22.xml
+FileName2=t22_bticon-comment.png
+URL2=https://peformation.elmg.net/habillages/1493313768-1493843130-theme_590a3a316e406/images/bticon-comment.png
+FileName3=t22_success.txt
+URL3=http://detectportal.firefox.com/success.txt
+[ProtocolInfo]
+ProtocolId=QTWeb
